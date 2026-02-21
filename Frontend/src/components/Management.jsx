@@ -1,25 +1,43 @@
-import React, { useState } from 'react';
-import { Package, Search, Layers, Filter, ArrowUpDown, Moon, CarFront } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Search, Layers, Filter, ArrowUpDown, CarFront } from 'lucide-react';
 import './Management.css';
 
 const Management = () => {
-    // Form logic placeholder
+    const [logs, setLogs] = useState([]);
+    const [vehicles, setVehicles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const [formData, setFormData] = useState({
-        vehicleName: '',
-        issueType: 'Engine Issue',
-        serviceDate: ''
+        vehicle_id: '',
+        description: 'Engine Issue',
+        cost: '',
+        service_date: new Date().toISOString().split('T')[0]
     });
 
-    // Dummy data to match the screenshot table
-    const [logs, setLogs] = useState([
-        { id: '#321', vehicle: 'TATA Truck 04', issue: 'Engine Issue', date: '20/02/2024', cost: '$10,450', status: 'NEW', statusClass: 'status-new' },
-        { id: '#320', vehicle: 'Eicher XL 400', issue: 'Brake Pad Replacement', date: '18/02/2024', cost: '$1,200', status: 'PENDING', statusClass: 'status-pending' },
-        { id: '#319', vehicle: 'Mahindra Bolero', issue: 'Oil Change', date: '15/02/2024', cost: '$450', status: 'COMPLETED', statusClass: 'status-completed' },
-        { id: '#318', vehicle: 'Force Traveller', issue: 'AC Compressor Repair', date: '12/02/2024', cost: '$3,200', status: 'COMPLETED', statusClass: 'status-completed' },
-        { id: '#317', vehicle: 'Ashok Leyland 12', issue: 'Clutch Overhaul', date: '10/02/2024', cost: '$8,900', status: 'CRITICAL', statusClass: 'status-critical' },
-        { id: '#316', vehicle: 'Maruti Suzuki', issue: 'Tire Replacement', date: '08/02/2024', cost: '$800', status: 'COMPLETED', statusClass: 'status-completed' },
-        { id: '#315', vehicle: 'TATA Ace', issue: 'General Service', date: '05/02/2024', cost: '$300', status: 'PENDING', statusClass: 'status-pending' },
-    ]);
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const config = { headers: { 'Authorization': `Bearer ${token}` } };
+
+            const [logsRes, vehRes] = await Promise.all([
+                axios.get('http://localhost:3000/api/logs/maintenance', config),
+                axios.get('http://localhost:3000/api/vehicles', config)
+            ]);
+
+            setLogs(logsRes.data);
+            setVehicles(vehRes.data);
+
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     // Table State
     const [searchTerm, setSearchTerm] = useState('');
@@ -31,25 +49,23 @@ const Management = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleCreateLog = () => {
-        if (!formData.vehicleName || !formData.serviceDate) return;
-
-        const newLog = {
-            id: `#${Math.floor(Math.random() * 900) + 100}`,
-            vehicle: formData.vehicleName,
-            issue: formData.issueType,
-            date: formData.serviceDate,
-            cost: 'TBD',
-            status: 'NEW',
-            statusClass: 'status-new'
-        };
-
-        setLogs([newLog, ...logs]);
-        setFormData({ vehicleName: '', issueType: 'Engine Issue', serviceDate: '' });
+    const handleCreateLog = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post('http://localhost:3000/api/logs/maintenance', formData, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            alert('Maintenance log recorded - Vehicle is now marked InShop!');
+            setFormData({ vehicle_id: '', description: 'Engine Issue', cost: '', service_date: new Date().toISOString().split('T')[0] });
+            fetchData();
+        } catch (err) {
+            alert(err.response?.data?.error || "Error recording maintenance check");
+        }
     };
 
     const handleCancel = () => {
-        setFormData({ vehicleName: '', issueType: 'Engine Issue', serviceDate: '' });
+        setFormData({ vehicle_id: '', description: 'Engine Issue', cost: '', service_date: new Date().toISOString().split('T')[0] });
     };
 
     const toggleSort = () => {
@@ -57,16 +73,22 @@ const Management = () => {
     };
 
     // Filter, Sort, and Paginate logic
+    // Using mapping helper for vehicle name
+    const getVehicleName = (vId) => {
+        const v = vehicles.find(veh => veh.id === vId);
+        return v ? `${v.license_plate} (${v.model_name})` : `Veh #${vId}`;
+    };
+
     const filteredLogs = logs.filter(log =>
-        log.vehicle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.issue.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.id.toLowerCase().includes(searchTerm.toLowerCase())
+        getVehicleName(log.vehicle_id).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        log.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        String(log.id).toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const sortedLogs = [...filteredLogs].sort((a, b) => {
-        // Simple string comparison on ID for dummy sorting
-        if (sortOrder === 'asc') return a.id.localeCompare(b.id);
-        return b.id.localeCompare(a.id);
+        // Simple string/number comparison on ID for sorting
+        if (sortOrder === 'asc') return a.id - b.id;
+        return b.id - a.id;
     });
 
     const totalPages = Math.ceil(sortedLogs.length / logsPerPage);
@@ -82,10 +104,12 @@ const Management = () => {
 
     return (
         <div className="management-container">
+            <main className="management-main" style={{ padding: '24px' }}>
+                <div style={{ marginBottom: '24px' }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Maintenance & Service Logs</h1>
+                    <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Schedule services and track repair costs.</p>
+                </div>
 
-
-            {/* Main Content View Container */}
-            <main className="management-main">
                 <div className="content-box">
 
                     {/* Top Log Header & Search */}
@@ -114,7 +138,6 @@ const Management = () => {
 
                     {/* Split Form & Table Container */}
                     <div className="management-content-split">
-
                         {/* New Service Form Side */}
                         <div className="management-form-panel">
                             <div className="panel-header">
@@ -122,38 +145,50 @@ const Management = () => {
                                 <p>Add a new maintenance log to the fleet.</p>
                             </div>
 
-                            <form className="management-form">
+                            <form className="management-form" onSubmit={handleCreateLog}>
                                 <div className="input-group">
                                     <label>Vehicle Name</label>
-                                    <input
-                                        type="text"
-                                        name="vehicleName"
-                                        placeholder="e.g. TATA Truck 04"
-                                        value={formData.vehicleName}
-                                        onChange={handleChange}
-                                    />
+                                    <select required name="vehicle_id" value={formData.vehicle_id} onChange={handleChange} style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
+                                        <option value="">- Select Vehicle -</option>
+                                        {vehicles.map(v => <option key={v.id} value={v.id}>{v.license_plate} ({v.model_name})</option>)}
+                                    </select>
                                 </div>
                                 <div className="input-group">
                                     <label>Issue / Service Type</label>
-                                    <select name="issueType" value={formData.issueType} onChange={handleChange}>
+                                    <select name="description" value={formData.description} onChange={handleChange} style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
                                         <option value="Engine Issue">Engine Issue</option>
-                                        <option value="Brake Pad">Brake Pad</option>
+                                        <option value="Brake Pad">Brake Pad Replacement</option>
                                         <option value="Oil Change">Oil Change</option>
+                                        <option value="Tire Replacement">Tire Replacement</option>
+                                        <option value="Accident Repair">Accident Repair</option>
                                     </select>
+                                </div>
+                                <div className="input-group">
+                                    <label>Estimated Cost (₹)</label>
+                                    <input
+                                        type="number"
+                                        required
+                                        name="cost"
+                                        placeholder="e.g. 1500"
+                                        value={formData.cost}
+                                        onChange={handleChange}
+                                        style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                                    />
                                 </div>
                                 <div className="input-group">
                                     <label>Service Date</label>
                                     <input
-                                        type="text"
-                                        name="serviceDate"
-                                        placeholder="mm/dd/yyyy"
-                                        value={formData.serviceDate}
+                                        type="date"
+                                        required
+                                        name="service_date"
+                                        value={formData.service_date}
                                         onChange={handleChange}
+                                        style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px' }}
                                     />
                                 </div>
 
-                                <div className="form-actions">
-                                    <button type="button" className="btn-primary" style={{ backgroundColor: '#059669' }} onClick={handleCreateLog}>Create Log</button>
+                                <div className="form-actions" style={{ marginTop: '16px' }}>
+                                    <button type="submit" className="btn-primary" style={{ backgroundColor: '#059669', border: 'none', padding: '10px 16px', color: 'white', borderRadius: '6px', cursor: 'pointer' }}>Create Log</button>
                                     <button type="button" className="btn-secondary" onClick={handleCancel}>Cancel</button>
                                 </div>
                             </form>
@@ -161,63 +196,65 @@ const Management = () => {
 
                         {/* Table Listing Side */}
                         <div className="management-table-panel">
-                            <table className="management-table">
-                                <thead>
-                                    <tr>
-                                        <th>LOG ID</th>
-                                        <th>VEHICLE</th>
-                                        <th>ISSUE/SERVICE</th>
-                                        <th>DATE</th>
-                                        <th>COST</th>
-                                        <th>STATUS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentLogs.map((log, i) => (
-                                        <tr key={i}>
-                                            <td className="cost-bold" style={{ color: '#6B7280' }}>{log.id}</td>
-                                            <td>
-                                                <div className="vehicle-cell">
-                                                    <div className="vehicle-icon-bg">
-                                                        <CarFront size={14} color="#3B82F6" />
-                                                    </div>
-                                                    <span className="vehicle-name">{log.vehicle}</span>
-                                                </div>
-                                            </td>
-                                            <td>{log.issue}</td>
-                                            <td>{log.date}</td>
-                                            <td className="cost-bold">{log.cost}</td>
-                                            <td>
-                                                <span className={`status-pill ${log.statusClass}`}>
-                                                    {log.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {currentLogs.length === 0 && (
-                                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>No records found.</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
-                            {/* Pagination row */}
-                            <div className="pagination">
-                                <span>Showing {sortedLogs.length > 0 ? indexOfFirstLog + 1 : 0} to {Math.min(indexOfLastLog, sortedLogs.length)} of {sortedLogs.length} logs</span>
-                                <div className="page-controls">
-                                    <button className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>{'<'}</button>
+                            {loading ? <p style={{ padding: '20px' }}>Loading logs data...</p> : (
+                                <>
+                                    <table className="management-table">
+                                        <thead>
+                                            <tr>
+                                                <th>LOG ID</th>
+                                                <th>VEHICLE</th>
+                                                <th>ISSUE/SERVICE</th>
+                                                <th>DATE</th>
+                                                <th>COST</th>
+                                                <th>STATUS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentLogs.map((log) => (
+                                                <tr key={log.id}>
+                                                    <td className="cost-bold" style={{ color: '#6B7280' }}>#{log.id}</td>
+                                                    <td>
+                                                        <div className="vehicle-cell" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <div className="vehicle-icon-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', backgroundColor: '#EFF6FF', borderRadius: '8px' }}>
+                                                                <CarFront size={14} color="#3B82F6" />
+                                                            </div>
+                                                            <span className="vehicle-name">{getVehicleName(log.vehicle_id)}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>{log.description}</td>
+                                                    <td>{new Date(log.service_date).toLocaleDateString()}</td>
+                                                    <td className="cost-bold" style={{ color: '#D97706' }}>₹{log.cost}</td>
+                                                    <td>
+                                                        <span className="status-pill status-completed">COMPLETED</span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {currentLogs.length === 0 && (
+                                                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>No records found.</td></tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                    {/* Pagination row */}
+                                    <div className="pagination">
+                                        <span>Showing {sortedLogs.length > 0 ? indexOfFirstLog + 1 : 0} to {Math.min(indexOfLastLog, sortedLogs.length)} of {sortedLogs.length} logs</span>
+                                        <div className="page-controls">
+                                            <button className="page-btn" onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>{'<'}</button>
 
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-                                        <button
-                                            key={number}
-                                            className={`page-btn ${currentPage === number ? 'active-purple' : ''}`}
-                                            onClick={() => goToPage(number)}
-                                        >
-                                            {number}
-                                        </button>
-                                    ))}
+                                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                                                <button
+                                                    key={number}
+                                                    className={`page-btn ${currentPage === number ? 'active-purple' : ''}`}
+                                                    onClick={() => goToPage(number)}
+                                                >
+                                                    {number}
+                                                </button>
+                                            ))}
 
-                                    <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages || totalPages === 0}>{'>'}</button>
-                                </div>
-                            </div>
+                                            <button className="page-btn" onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages || totalPages === 0}>{'>'}</button>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

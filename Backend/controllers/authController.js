@@ -4,13 +4,13 @@ const db = require('../config/db');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail', // Configurable via environment variables
+const transporter = process.env.EMAIL_USER && process.env.EMAIL_PASS ? nodemailer.createTransport({
+    service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
-});
+}) : null;
 
 exports.signup = async (req, res) => {
     const { name, email, password, role } = req.body;
@@ -67,63 +67,9 @@ exports.login = async (req, res) => {
             return res.status(400).json({ error: 'Invalid email, password, or role' });
         }
 
-        // Generate OTP
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        const otpHash = crypto.createHash('sha256').update(otp).digest('hex');
-
-        // Store hashed OTP in temporary token instead of plain OTP
-        const tempToken = jwt.sign(
-            { id: user.id, email: user.email, role: user.role, otpHash },
-            process.env.JWT_SECRET || 'hackathon_secret',
-            { expiresIn: '10m' }
-        );
-
-        // Send Email
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Your Login OTP',
-            text: `Your OTP for login is: ${otp}. It is valid for 10 minutes.`
-        };
-
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log(`OTP email sent to ${user.email}`);
-        } catch (mailErr) {
-            console.error('Email could not be sent. Check your NodeMailer configuration.', mailErr);
-            // Log OTP during development if email fails
-            console.log(`Generated OTP for ${user.email}:`, otp);
-        }
-
-        res.json({
-            message: 'OTP sent successfully',
-            requiresOtp: true,
-            tempToken
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Server error during login' });
-    }
-};
-
-exports.verifyOtp = async (req, res) => {
-    const { otp, tempToken } = req.body;
-
-    if (!otp || !tempToken) {
-        return res.status(400).json({ error: 'OTP and temporary token are required' });
-    }
-
-    try {
-        const decoded = jwt.verify(tempToken, process.env.JWT_SECRET || 'hackathon_secret');
-
-        const providedOtpHash = crypto.createHash('sha256').update(otp).digest('hex');
-        if (providedOtpHash !== decoded.otpHash) {
-            return res.status(400).json({ error: 'Invalid OTP' });
-        }
-
-        // Issue actual auth token
+        // Issue actual auth token directly
         const token = jwt.sign(
-            { id: decoded.id, email: decoded.email, role: decoded.role },
+            { id: user.id, email: user.email, role: user.role },
             process.env.JWT_SECRET || 'hackathon_secret',
             { expiresIn: '24h' }
         );
@@ -132,16 +78,15 @@ exports.verifyOtp = async (req, res) => {
             message: 'Logged in successfully',
             token,
             user: {
-                id: decoded.id,
-                email: decoded.email,
-                role: decoded.role
+                id: user.id,
+                email: user.email,
+                role: user.role
             }
         });
     } catch (err) {
         console.error(err);
-        if (err.name === 'TokenExpiredError') {
-            return res.status(400).json({ error: 'OTP has expired' });
-        }
-        res.status(400).json({ error: 'Invalid or expired temporary token' });
+        res.status(500).json({ error: 'Server error during login' });
     }
 };
+
+
