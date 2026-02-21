@@ -40,7 +40,12 @@ const Login = () => {
                 setShowOtpStep(true);
             } else if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/dashboard'); // Will need react-router in App.jsx ultimately
+                // Custom routing based on role
+                if (role === 'FinancialAnalyst') {
+                    navigate('/expense');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
                 setError('Unexpected response from server.');
             }
@@ -65,7 +70,11 @@ const Login = () => {
 
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/dashboard');
+                if (role === 'FinancialAnalyst') {
+                    navigate('/expense');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
                 setError('Invalid server response during OTP verification.');
             }
