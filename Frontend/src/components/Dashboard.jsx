@@ -60,7 +60,7 @@ const Dashboard = () => {
             <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                 <h2>Your Vehicles</h2>
                 {vehicles.length === 0 ? (
-                    <p style={{ color: '#6b7280' }}>No vehicles found or loading...</p>
+                    <p style={{ color: '#000000' }}>No vehicles found or loading...</p>
                 ) : (
                     <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem' }}>
                         <thead>

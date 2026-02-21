@@ -80,10 +80,10 @@ const DashboardOverview = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                 <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>Command Center</h1>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={() => navigate('/vehicle-registry')} style={{ background: '#fff', color: '#475569', border: '1px solid #E2E8F0', padding: '8px 16px', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <button onClick={() => navigate('/vehicle-registry')} style={{ background: '#fff', color: '#000000', border: '1px solid #E2E8F0', padding: '8px 16px', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         + New Vehicle
                     </button>
-                    <button onClick={() => navigate('/dispatcher')} style={{ background: '#2563EB', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <button onClick={() => navigate('/dispatcher')} style={{ background: '#2563EB', color: '#000000', border: 'none', padding: '8px 16px', borderRadius: '8px', fontSize: '0.875rem', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <Truck size={16} /> New Trip
                     </button>
                 </div>
@@ -158,14 +158,14 @@ const DashboardOverview = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => setIsSearchFocused(true)}
                         onBlur={() => setIsSearchFocused(false)}
-                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#1E293B' }}
+                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#000000' }}
                     />
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
                     <div style={{ position: 'relative' }}>
                         <button
                             onClick={() => setIsGroupByOpen(!isGroupByOpen)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }}
                         >
                             <Layers size={16} /> Group by
                         </button>
@@ -189,7 +189,7 @@ const DashboardOverview = () => {
                                         style={{
                                             padding: '8px 16px',
                                             fontSize: '0.875rem',
-                                            color: selectedGroup === option ? '#2563EB' : '#374151',
+                                            color: selectedGroup === option ? '#2563EB' : '#000000',
                                             fontWeight: selectedGroup === option ? '600' : '400',
                                             cursor: 'pointer',
                                             borderBottom: idx !== 2 ? '1px solid #F1F5F9' : 'none',
@@ -216,7 +216,7 @@ const DashboardOverview = () => {
                     <div style={{ position: 'relative' }}>
                         <button
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }}
                         >
                             <Filter size={16} /> Filter
                         </button>
@@ -240,7 +240,7 @@ const DashboardOverview = () => {
                                         style={{
                                             padding: '8px 16px',
                                             fontSize: '0.875rem',
-                                            color: selectedFilter === option ? '#2563EB' : '#374151',
+                                            color: selectedFilter === option ? '#2563EB' : '#000000',
                                             fontWeight: selectedFilter === option ? '600' : '400',
                                             cursor: 'pointer',
                                             borderBottom: idx !== 3 ? '1px solid #F1F5F9' : 'none',

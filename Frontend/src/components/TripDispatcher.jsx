@@ -97,7 +97,7 @@ const TripDispatcher = () => {
         if (status === 'Completed') return { bg: '#D1FAE5', text: '#065F46', dot: '#10B981' };
         if (status === 'Dispatched') return { bg: '#FEF3C7', text: '#92400E', dot: '#F59E0B' };
         if (status === 'Draft') return { bg: '#FEE2E2', text: '#991B1B', dot: '#EF4444' };
-        return { bg: '#E5E7EB', text: '#374151', dot: '#6B7280' };
+        return { bg: '#E5E7EB', text: '#000000', dot: '#000000' };
     };
 
     const filteredTrips = trips.filter(trip => {
@@ -128,8 +128,8 @@ const TripDispatcher = () => {
     return (
         <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Trip Dispatcher</h1>
-                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Manage and dispatch new trips.</p>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#000000', marginBottom: '4px' }}>Trip Dispatcher</h1>
+                <p style={{ color: '#000000', fontSize: '0.875rem' }}>Manage and dispatch new trips.</p>
             </div>
 
             {/* Toolbar */}
@@ -154,14 +154,14 @@ const TripDispatcher = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => setIsSearchFocused(true)}
                         onBlur={() => setIsSearchFocused(false)}
-                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#1E293B' }}
+                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#000000' }}
                     />
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
                     <div style={{ position: 'relative' }}>
                         <button
                             onClick={() => setIsGroupByOpen(!isGroupByOpen)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }}
                         >
                             <Layers size={16} /> Group by
                         </button>
@@ -185,7 +185,7 @@ const TripDispatcher = () => {
                                         style={{
                                             padding: '8px 16px',
                                             fontSize: '0.875rem',
-                                            color: selectedGroup === option ? '#2563EB' : '#374151',
+                                            color: selectedGroup === option ? '#2563EB' : '#000000',
                                             fontWeight: selectedGroup === option ? '600' : '400',
                                             cursor: 'pointer',
                                             borderBottom: idx !== 2 ? '1px solid #F1F5F9' : 'none',
@@ -212,7 +212,7 @@ const TripDispatcher = () => {
                     <div style={{ position: 'relative' }}>
                         <button
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }}
                         >
                             <Filter size={16} /> Filter
                         </button>
@@ -236,7 +236,7 @@ const TripDispatcher = () => {
                                         style={{
                                             padding: '8px 16px',
                                             fontSize: '0.875rem',
-                                            color: selectedFilter === option ? '#2563EB' : '#374151',
+                                            color: selectedFilter === option ? '#2563EB' : '#000000',
                                             fontWeight: selectedFilter === option ? '600' : '400',
                                             cursor: 'pointer',
                                             borderBottom: idx !== 3 ? '1px solid #F1F5F9' : 'none',
@@ -266,7 +266,7 @@ const TripDispatcher = () => {
             {/* Active Trips Table */}
             <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', marginBottom: '24px', overflowX: 'auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Zap size={18} color="#F59E0B" fill="#F59E0B" /> Active Trips
                     </h3>
                 </div>
@@ -274,12 +274,12 @@ const TripDispatcher = () => {
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
                         <thead>
                             <tr>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '10%' }}>TRIP ID</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>VEHICLE ID</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>DRIVER ID</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '20%' }}>ORIGIN</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '20%' }}>DESTINATION</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>STATUS</th>
+                                <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '10%' }}>TRIP ID</th>
+                                <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>VEHICLE ID</th>
+                                <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>DRIVER ID</th>
+                                <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '20%' }}>ORIGIN</th>
+                                <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '20%' }}>DESTINATION</th>
+                                <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>STATUS</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -288,10 +288,10 @@ const TripDispatcher = () => {
                                 return (
                                     <tr key={trip.id} style={{ borderBottom: idx === filteredTrips.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
                                         <td style={{ padding: '16px 0', color: '#2563EB', fontWeight: '500', fontSize: '0.875rem' }}>#{trip.id}</td>
-                                        <td style={{ padding: '16px 0', color: '#334155', fontSize: '0.875rem' }}>Veh #{trip.vehicle_id}</td>
-                                        <td style={{ padding: '16px 0', color: '#334155', fontSize: '0.875rem' }}>Driver #{trip.driver_id}</td>
-                                        <td style={{ padding: '16px 0', color: '#334155', fontSize: '0.875rem' }}>{trip.start_location}</td>
-                                        <td style={{ padding: '16px 0', color: '#334155', fontSize: '0.875rem' }}>{trip.end_location}</td>
+                                        <td style={{ padding: '16px 0', color: '#000000', fontSize: '0.875rem' }}>Veh #{trip.vehicle_id}</td>
+                                        <td style={{ padding: '16px 0', color: '#000000', fontSize: '0.875rem' }}>Driver #{trip.driver_id}</td>
+                                        <td style={{ padding: '16px 0', color: '#000000', fontSize: '0.875rem' }}>{trip.start_location}</td>
+                                        <td style={{ padding: '16px 0', color: '#000000', fontSize: '0.875rem' }}>{trip.end_location}</td>
                                         <td style={{ padding: '16px 0' }}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: style.bg, color: style.text, padding: '4px 10px', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '500' }}>
                                                 <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: style.dot }}></div>
@@ -309,26 +309,26 @@ const TripDispatcher = () => {
             {/* New Trip Dispatch Form */}
             <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '30px', maxWidth: '800px' }}>
                 <div style={{ marginBottom: '24px' }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <span style={{ color: '#334155', display: 'flex', alignItems: 'center' }}>⛭</span> New Trip Dispatch
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{ color: '#000000', display: 'flex', alignItems: 'center' }}>⛭</span> New Trip Dispatch
                     </h3>
-                    <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Assign available vehicles and drivers for new delivery assignments.</p>
+                    <p style={{ color: '#000000', fontSize: '0.875rem' }}>Assign available vehicles and drivers for new delivery assignments.</p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Select Available Vehicle</label>
+                        <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Select Available Vehicle</label>
                         <select
                             value={formData.vehicle_id}
                             onChange={(e) => setFormData({ ...formData, vehicle_id: e.target.value })}
-                            style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', color: '#334155', background: '#fff' }}
+                            style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', color: '#000000', background: '#fff' }}
                         >
                             <option value="">- Choose Vehicle -</option>
                             {vehicles.map(v => <option key={v.id} value={v.id}>{v.license_plate} - {v.model_name} ({v.max_capacity_kg}kg capacity)</option>)}
                         </select>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Cargo Weight (Kg)</label>
+                        <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Cargo Weight (Kg)</label>
                         <input
                             type="number"
                             placeholder="e.g. 12000"
@@ -353,11 +353,11 @@ const TripDispatcher = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Select OnDuty Driver</label>
+                        <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Select OnDuty Driver</label>
                         <select
                             value={formData.driver_id}
                             onChange={(e) => setFormData({ ...formData, driver_id: e.target.value })}
-                            style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', color: '#334155', background: '#fff' }}
+                            style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', color: '#000000', background: '#fff' }}
                         >
                             <option value="">- Choose Driver -</option>
                             {drivers.map(d => <option key={d.id} value={d.id}>{d.name} (License: {d.license_number})</option>)}
@@ -366,7 +366,7 @@ const TripDispatcher = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-                    <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Origin Address</label>
+                    <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Origin Address</label>
                     <div style={{
                         display: 'flex', alignItems: 'center',
                         border: `1px solid ${isOriginFocused ? '#3B82F6' : '#E2E8F0'}`,
@@ -386,7 +386,7 @@ const TripDispatcher = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
-                    <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Destination Address</label>
+                    <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Destination Address</label>
                     <div style={{
                         display: 'flex', alignItems: 'center',
                         border: `1px solid ${isDestFocused ? '#3B82F6' : '#E2E8F0'}`,
@@ -406,8 +406,8 @@ const TripDispatcher = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={handleDispatch} style={{ background: '#2563EB', color: '#fff', padding: '10px 24px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '0.875rem', cursor: 'pointer' }}>Dispatch Trip</button>
-                    <button style={{ background: '#fff', color: '#475569', padding: '10px 24px', borderRadius: '8px', border: '1px solid #E2E8F0', fontWeight: '500', fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
+                    <button onClick={handleDispatch} style={{ background: '#2563EB', color: '#000000', padding: '10px 24px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '0.875rem', cursor: 'pointer' }}>Dispatch Trip</button>
+                    <button style={{ background: '#fff', color: '#000000', padding: '10px 24px', borderRadius: '8px', border: '1px solid #E2E8F0', fontWeight: '500', fontSize: '0.875rem', cursor: 'pointer' }}>Cancel</button>
                 </div>
             </div>
         </div>

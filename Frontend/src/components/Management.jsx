@@ -114,8 +114,8 @@ const Management = () => {
         <div className="management-container">
             <main className="management-main" style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '24px' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Maintenance & Service Logs</h1>
-                    <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Schedule services and track repair costs.</p>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#000000', marginBottom: '4px' }}>Maintenance & Service Logs</h1>
+                    <p style={{ color: '#000000', fontSize: '0.875rem' }}>Schedule services and track repair costs.</p>
                 </div>
 
                 <div className="content-box">
@@ -225,7 +225,7 @@ const Management = () => {
                                         <tbody>
                                             {currentLogs.map((log) => (
                                                 <tr key={log.id}>
-                                                    <td className="cost-bold" style={{ color: '#6B7280' }}>#{log.id}</td>
+                                                    <td className="cost-bold" style={{ color: '#000000' }}>#{log.id}</td>
                                                     <td>
                                                         <div className="vehicle-cell" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                             <div className="vehicle-icon-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', backgroundColor: '#EFF6FF', borderRadius: '8px' }}>

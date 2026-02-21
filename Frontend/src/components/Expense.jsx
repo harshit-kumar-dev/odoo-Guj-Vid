@@ -122,18 +122,18 @@ const Expense = () => {
     return (
         <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Trip Expenses & Fuel Logs</h1>
-                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Track operational costs, fuel consumption, and view trips data.</p>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#000000', marginBottom: '4px' }}>Trip Expenses & Fuel Logs</h1>
+                <p style={{ color: '#000000', fontSize: '0.875rem' }}>Track operational costs, fuel consumption, and view trips data.</p>
             </div>
 
             <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                 {/* Form side */}
                 <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '0 0 340px' }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', marginBottom: '20px' }}>Log Fuel Expense</h3>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#000000', marginBottom: '20px' }}>Log Fuel Expense</h3>
 
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Vehicle</label>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Vehicle</label>
                             <select
                                 required
                                 value={formData.vehicle_id}
@@ -146,7 +146,7 @@ const Expense = () => {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Associated Trip (Optional)</label>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Associated Trip (Optional)</label>
                             <select
                                 value={formData.trip_id}
                                 onChange={e => setFormData({ ...formData, trip_id: e.target.value })}
@@ -159,7 +159,7 @@ const Expense = () => {
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Liters</label>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Liters</label>
                                 <div style={{
                                     display: 'flex', alignItems: 'center',
                                     border: `1px solid ${isLitersFocused ? '#3B82F6' : '#E2E8F0'}`,
@@ -180,7 +180,7 @@ const Expense = () => {
                                 </div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Cost (₹)</label>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Cost (₹)</label>
                                 <div style={{
                                     display: 'flex', alignItems: 'center',
                                     border: `1px solid ${isCostFocused ? '#3B82F6' : '#E2E8F0'}`,
@@ -203,7 +203,7 @@ const Expense = () => {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Date</label>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Date</label>
                             <input
                                 type="date"
                                 required
@@ -224,14 +224,14 @@ const Expense = () => {
                             />
                         </div>
 
-                        <button type="submit" style={{ background: '#2563EB', color: '#fff', padding: '12px', borderRadius: '8px', border: 'none', fontWeight: '500', marginTop: '10px', cursor: 'pointer' }}>Save Fuel Log</button>
+                        <button type="submit" style={{ background: '#2563EB', color: '#000000', padding: '12px', borderRadius: '8px', border: 'none', fontWeight: '500', marginTop: '10px', cursor: 'pointer' }}>Save Fuel Log</button>
                     </form>
                 </div>
 
                 {/* Table side */}
                 <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '1', minWidth: '500px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
-                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', margin: 0 }}>Fleet Trip Expense Summary</h3>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#000000', margin: 0 }}>Fleet Trip Expense Summary</h3>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', maxWidth: '300px' }}>
                             <div style={{
@@ -258,7 +258,7 @@ const Expense = () => {
                                 <div style={{ position: 'relative', flex: 1 }}>
                                     <button
                                         onClick={() => { setIsFilterOpen(!isFilterOpen); setIsSortOpen(false); }}
-                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxSizing: 'border-box', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxSizing: 'border-box', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }}
                                     >
                                         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Filter size={16} /> {filterStatus === 'All' ? 'Null' : filterStatus}</span>
                                         <ChevronDown size={14} />
@@ -270,7 +270,7 @@ const Expense = () => {
                                             {['All', 'Done', 'Pending', 'Cancelled'].map((option) => (
                                                 <div
                                                     key={option}
-                                                    style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: filterStatus === option ? '#EFF6FF' : '#fff', color: filterStatus === option ? '#2563EB' : '#334155' }}
+                                                    style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: filterStatus === option ? '#EFF6FF' : '#fff', color: filterStatus === option ? '#2563EB' : '#000000' }}
                                                     onClick={() => { setFilterStatus(option); setIsFilterOpen(false); }}
                                                 >
                                                     {option === 'All' ? 'Null' : option}
@@ -283,7 +283,7 @@ const Expense = () => {
                                 <div style={{ position: 'relative', flex: 1 }}>
                                     <button
                                         onClick={() => { setIsSortOpen(!isSortOpen); setIsFilterOpen(false); }}
-                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxSizing: 'border-box', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxSizing: 'border-box', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }}
                                     >
                                         <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ArrowUpDown size={16} /> {sortDistance === 'Neutral' ? 'Neutral' : (sortDistance === 'Ascending' ? 'Asc' : 'Desc')}</span>
                                         <ChevronDown size={14} />
@@ -295,7 +295,7 @@ const Expense = () => {
                                             {['Neutral', 'Ascending', 'Descending'].map((option) => (
                                                 <div
                                                     key={option}
-                                                    style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: sortDistance === option ? '#EFF6FF' : '#fff', color: sortDistance === option ? '#2563EB' : '#334155' }}
+                                                    style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: sortDistance === option ? '#EFF6FF' : '#fff', color: sortDistance === option ? '#2563EB' : '#000000' }}
                                                     onClick={() => { setSortDistance(option); setIsSortOpen(false); }}
                                                 >
                                                     {option === 'Neutral' ? 'Neutral' : (option === 'Ascending' ? 'Asc' : 'Desc')}
@@ -312,10 +312,10 @@ const Expense = () => {
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                             <thead>
                                 <tr>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>TRIP ID</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>ROUTE & STATUS</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>DISTANCE</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>FUEL EXPENSE</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>TRIP ID</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>ROUTE & STATUS</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>DISTANCE</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>FUEL EXPENSE</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -329,14 +329,14 @@ const Expense = () => {
 
                                     return (
                                         <tr key={trip.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                                            <td style={{ padding: '16px 12px', color: '#1E293B', fontSize: '0.875rem', fontWeight: '500' }}>#{trip.id}</td>
-                                            <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>
+                                            <td style={{ padding: '16px 12px', color: '#000000', fontSize: '0.875rem', fontWeight: '500' }}>#{trip.id}</td>
+                                            <td style={{ padding: '16px 12px', color: '#000000', fontSize: '0.875rem' }}>
                                                 <div>{trip.start_location} → {trip.end_location}</div>
                                                 <span style={{ display: 'inline-block', marginTop: '4px', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: '600', background: bgStatusColor, color: statusColor }}>
                                                     {trip.status}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{getDistance(trip)} km</td>
+                                            <td style={{ padding: '16px 12px', color: '#000000', fontSize: '0.875rem' }}>{getDistance(trip)} km</td>
                                             <td style={{ padding: '16px 12px', color: '#10B981', fontSize: '0.875rem', fontWeight: '600' }}>
                                                 {fuelCost > 0 ? `₹${fuelCost.toFixed(2)}` : '--'}
                                             </td>
@@ -345,7 +345,7 @@ const Expense = () => {
                                 })}
                                 {filteredTrips.length === 0 && (
                                     <tr>
-                                        <td colSpan="4" style={{ textAlign: 'center', padding: '24px', color: '#64748B' }}>No trips found matching the criteria.</td>
+                                        <td colSpan="4" style={{ textAlign: 'center', padding: '24px', color: '#000000' }}>No trips found matching the criteria.</td>
                                     </tr>
                                 )}
                             </tbody>
