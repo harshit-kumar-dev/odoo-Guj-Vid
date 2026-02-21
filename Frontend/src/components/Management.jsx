@@ -25,19 +25,7 @@ const Management = () => {
 
     return (
         <div className="management-container">
-            {/* Header mapped structurally the same as Expense */}
-            <header className="management-header">
-                <div className="brand-logo">
-                    <div className="logo-icon blue-logo">
-                        <Package size={24} color="#ffffff" />
-                    </div>
-                    <span className="logo-text">Shipzo</span>
-                </div>
-                <div className="header-actions">
-                    <Moon className="icon-action moon-icon" size={20} />
-                    <div className="avatar">JD</div>
-                </div>
-            </header>
+
 
             {/* Main Content View Container */}
             <main className="management-main">
