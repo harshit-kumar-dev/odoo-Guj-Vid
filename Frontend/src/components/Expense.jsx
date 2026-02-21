@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Fuel, CreditCard, Calendar } from 'lucide-react';
+import { Search, Fuel, CreditCard, Calendar, Filter, ArrowUpDown, ChevronDown } from 'lucide-react';
 import './Expense.css';
 
 const Expense = () => {
@@ -16,6 +16,22 @@ const Expense = () => {
         cost: '',
         log_date: new Date().toISOString().split('T')[0]
     });
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [filterStatus, setFilterStatus] = useState('All'); // All, Done, Pending, Cancelled
+    const [sortDistance, setSortDistance] = useState('Neutral'); // Neutral, Ascending, Descending
+
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSortOpen, setIsSortOpen] = useState(false);
+
+    // Debounce Search
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     const fetchData = async () => {
         try {
@@ -64,15 +80,49 @@ const Expense = () => {
         }
     };
 
+    const getDistance = (t) => {
+        if (t.start_odometer != null && t.end_odometer != null) {
+            return Math.max(0, t.end_odometer - t.start_odometer);
+        }
+        return 0;
+    };
+
+    const getTripFuelCost = (tripId) => {
+        return logs.filter(l => l.trip_id === tripId).reduce((sum, l) => sum + Number(l.cost), 0);
+    };
+
+    // Filter and Sort Trips
+    let filteredTrips = trips.filter(t => {
+        const q = debouncedSearch.toLowerCase();
+        const matches = (
+            t.start_location?.toLowerCase().includes(q) ||
+            t.end_location?.toLowerCase().includes(q) ||
+            t.id.toString().includes(q) ||
+            t.status?.toLowerCase().includes(q)
+        );
+        if (!matches) return false;
+
+        if (filterStatus === 'Done' && t.status !== 'Completed') return false;
+        if (filterStatus === 'Pending' && t.status !== 'Draft' && t.status !== 'Dispatched') return false;
+        if (filterStatus === 'Cancelled' && t.status !== 'Cancelled') return false;
+
+        return true;
+    });
+
+    if (sortDistance === 'Ascending') {
+        filteredTrips.sort((a, b) => getDistance(a) - getDistance(b));
+    } else if (sortDistance === 'Descending') {
+        filteredTrips.sort((a, b) => getDistance(b) - getDistance(a));
+    }
+
     return (
         <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ marginBottom: '24px' }}>
                 <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Trip Expenses & Fuel Logs</h1>
-                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Track operational costs and fuel consumption per vehicle.</p>
+                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Track operational costs, fuel consumption, and view trips data.</p>
             </div>
 
             <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-
                 {/* Form side */}
                 <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '0 0 340px' }}>
                     <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', marginBottom: '20px' }}>Log Fuel Expense</h3>
@@ -112,7 +162,7 @@ const Expense = () => {
                                 </div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Total Cost (₹)</label>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Cost (₹)</label>
                                 <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px' }}>
                                     <CreditCard size={14} color="#94A3B8" style={{ marginRight: '8px' }} />
                                     <input type="number" step="0.01" required value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} placeholder="0.00" />
@@ -137,29 +187,120 @@ const Expense = () => {
 
                 {/* Table side */}
                 <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '1', minWidth: '500px' }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', marginBottom: '20px' }}>Recent Fuel Transactions</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', margin: 0 }}>Trips & Associated Expenses</h3>
 
-                    {loading ? <p>Loading logs...</p> : (
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                background: '#ffffff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                padding: '8px 16px',
+                                flex: '1',
+                                maxWidth: '300px',
+                            }}>
+                                <Search size={18} color="#000" />
+                                <input
+                                    type="text"
+                                    placeholder="Search details..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#000' }}
+                                />
+                            </div>
+
+                            <div style={{ position: 'relative' }}>
+                                <button
+                                    onClick={() => { setIsFilterOpen(!isFilterOpen); setIsSortOpen(false); }}
+                                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                                >
+                                    <Filter size={16} /> Filter: {filterStatus === 'All' ? 'Null' : filterStatus} <ChevronDown size={14} />
+                                </button>
+                                {isFilterOpen && (
+                                    <div style={{
+                                        position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', minWidth: '150px', zIndex: 10
+                                    }}>
+                                        {['All', 'Done', 'Pending', 'Cancelled'].map((option) => (
+                                            <div
+                                                key={option}
+                                                style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: filterStatus === option ? '#EFF6FF' : '#fff', color: filterStatus === option ? '#2563EB' : '#334155' }}
+                                                onClick={() => { setFilterStatus(option); setIsFilterOpen(false); }}
+                                            >
+                                                {option === 'All' ? 'Null (All Data)' : option}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div style={{ position: 'relative' }}>
+                                <button
+                                    onClick={() => { setIsSortOpen(!isSortOpen); setIsFilterOpen(false); }}
+                                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                                >
+                                    <ArrowUpDown size={16} /> Sort: {sortDistance === 'Neutral' ? 'Neutral' : (sortDistance === 'Ascending' ? 'Dist Asc' : 'Dist Desc')} <ChevronDown size={14} />
+                                </button>
+                                {isSortOpen && (
+                                    <div style={{
+                                        position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', minWidth: '180px', zIndex: 10
+                                    }}>
+                                        {['Neutral', 'Ascending', 'Descending'].map((option) => (
+                                            <div
+                                                key={option}
+                                                style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: sortDistance === option ? '#EFF6FF' : '#fff', color: sortDistance === option ? '#2563EB' : '#334155' }}
+                                                onClick={() => { setSortDistance(option); setIsSortOpen(false); }}
+                                            >
+                                                {option === 'Neutral' ? 'Neutral' : (option === 'Ascending' ? 'Ascending (Distance)' : 'Descending (Distance)')}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {loading ? <p>Loading data...</p> : (
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                             <thead>
                                 <tr>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>DATE</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>VEHICLE</th>
                                     <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>TRIP ID</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>VOLUME</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>TOTAL COST</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>ROUTE & STATUS</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>DISTANCE</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>FUEL EXPENSE</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {logs.map((log) => (
-                                    <tr key={log.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                                        <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{new Date(log.log_date).toLocaleDateString()}</td>
-                                        <td style={{ padding: '16px 12px', color: '#1E293B', fontSize: '0.875rem', fontWeight: '500' }}>Veh #{log.vehicle_id}</td>
-                                        <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{log.trip_id ? `#TRP-${log.trip_id}` : '--'}</td>
-                                        <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{log.liters} L</td>
-                                        <td style={{ padding: '16px 12px', color: '#10B981', fontSize: '0.875rem', fontWeight: '600' }}>₹{log.cost}</td>
+                                {filteredTrips.map((trip) => {
+                                    const fuelCost = getTripFuelCost(trip.id);
+                                    let statusColor = '#E2E8F0';
+                                    let bgStatusColor = '#F8FAFC';
+                                    if (trip.status === 'Completed') { statusColor = '#065F46'; bgStatusColor = '#D1FAE5'; }
+                                    else if (trip.status === 'Draft' || trip.status === 'Dispatched') { statusColor = '#B45309'; bgStatusColor = '#FEF3C7'; }
+                                    else if (trip.status === 'Cancelled') { statusColor = '#991B1B'; bgStatusColor = '#FEE2E2'; }
+
+                                    return (
+                                        <tr key={trip.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                                            <td style={{ padding: '16px 12px', color: '#1E293B', fontSize: '0.875rem', fontWeight: '500' }}>#{trip.id}</td>
+                                            <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>
+                                                <div>{trip.start_location} → {trip.end_location}</div>
+                                                <span style={{ display: 'inline-block', marginTop: '4px', padding: '2px 8px', borderRadius: '4px', fontSize: '0.7rem', fontWeight: '600', background: bgStatusColor, color: statusColor }}>
+                                                    {trip.status}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{getDistance(trip)} km</td>
+                                            <td style={{ padding: '16px 12px', color: '#10B981', fontSize: '0.875rem', fontWeight: '600' }}>
+                                                {fuelCost > 0 ? `₹${fuelCost.toFixed(2)}` : '--'}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {filteredTrips.length === 0 && (
+                                    <tr>
+                                        <td colSpan="4" style={{ textAlign: 'center', padding: '24px', color: '#64748B' }}>No trips found matching the criteria.</td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     )}

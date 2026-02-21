@@ -52,7 +52,7 @@ const MainLayout = () => {
                 </div>
 
                 <div className="sidebar-role-badge">
-                    {sidebarOpen && <span className="role-text">{role}</span>}
+                    {sidebarOpen && <span className="role-text">{role === 'FinancialAnalyst' ? 'Financial Analyst' : role === 'SafetyOfficer' ? 'Safety Officer' : role}</span>}
                 </div>
 
                 <nav className="sidebar-nav">
