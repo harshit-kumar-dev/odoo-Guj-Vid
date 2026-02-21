@@ -342,6 +342,7 @@ const TripDispatcher = () => {
                                 boxShadow: isCargoFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
                                 borderRadius: '8px',
                                 fontSize: '0.875rem',
+                                color: '#1E293B',
                                 backgroundColor: 'transparent',
                                 outline: 'none',
                                 transition: 'all 0.2s ease-in-out'
@@ -380,7 +381,7 @@ const TripDispatcher = () => {
                             onFocus={() => setIsOriginFocused(true)}
                             onBlur={() => setIsOriginFocused(false)}
                             onChange={(e) => setFormData({ ...formData, start_location: e.target.value })}
-                            placeholder="Enter pickup location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }} />
+                            placeholder="Enter pickup location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', color: '#1E293B', backgroundColor: 'transparent' }} />
                     </div>
                 </div>
 
@@ -400,7 +401,7 @@ const TripDispatcher = () => {
                             onFocus={() => setIsDestFocused(true)}
                             onBlur={() => setIsDestFocused(false)}
                             onChange={(e) => setFormData({ ...formData, end_location: e.target.value })}
-                            placeholder="Enter drop-off location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }} />
+                            placeholder="Enter drop-off location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', color: '#1E293B', backgroundColor: 'transparent' }} />
                     </div>
                 </div>
 
