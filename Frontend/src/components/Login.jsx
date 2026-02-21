@@ -5,42 +5,45 @@ import { Package, Mail, Lock, Eye, EyeOff, KeyRound } from 'lucide-react';
 import './Login.css';
 
 const Login = () => {
-    // Basic form state
+    // Mode state
+    const [showOtpStep, setShowOtpStep] = useState(false);
+
+    // Form state
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('Manager');
     const [showPassword, setShowPassword] = useState(false);
 
-    // OTP specific state
-    const [showOtpStep, setShowOtpStep] = useState(false);
+    // OTP state
     const [otp, setOtp] = useState('');
     const [tempToken, setTempToken] = useState('');
 
     // UI state
     const [error, setError] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
-    // 1. Handle Login
-    const handleLoginSubmit = async (e) => {
+    const handleAuthSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setSuccessMsg('');
         setIsLoading(true);
 
-        try {
-            const response = await axios.post('http://localhost:3000/api/auth/login', {
-                email,
-                password,
-                role
-            });
+        const payload = { email, password, role };
 
+        try {
+            const response = await axios.post('http://localhost:3000/api/auth/login', payload);
+
+            // If login has OTP flow from backend, it will send requiresOtp
             if (response.data.requiresOtp && response.data.tempToken) {
                 setTempToken(response.data.tempToken);
                 setShowOtpStep(true);
+                setSuccessMsg('OTP sent to your email.');
             } else if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/dashboard'); // Will need react-router in App.jsx ultimately
+                navigate('/dashboard');
             } else {
                 setError('Unexpected response from server.');
             }
@@ -51,7 +54,6 @@ const Login = () => {
         }
     };
 
-    // 2. Handle OTP Verification
     const handleOtpSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -78,7 +80,7 @@ const Login = () => {
 
     return (
         <div className="login-wrapper">
-            {/* Left Panel - Dark Theme Info Section */}
+            {/* Left Panel */}
             <div className="login-left-panel">
                 <div className="brand-logo">
                     <div className="logo-icon">
@@ -112,7 +114,7 @@ const Login = () => {
                 </div>
             </div>
 
-            {/* Right Panel - Login Form */}
+            {/* Right Panel */}
             <div className="login-right-panel">
                 <div className="form-container">
                     <h2>{showOtpStep ? 'Verify OTP' : 'Welcome back'}</h2>
@@ -121,18 +123,18 @@ const Login = () => {
                     </p>
 
                     {error && <div className="error-message">{error}</div>}
+                    {successMsg && <div className="success-message" style={{ backgroundColor: '#D1FAE5', color: '#065F46', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.875rem', border: '1px solid #10B981' }}>{successMsg}</div>}
 
                     {!showOtpStep ? (
-                        /* ----- STEP 1: INITIAL LOGIN FORM ----- */
-                        <form onSubmit={handleLoginSubmit} className="login-form">
+                        <form onSubmit={handleAuthSubmit} className="login-form">
                             <div className="input-group">
-                                <label>Select Role</label>
+                                <label>Role</label>
                                 <select
                                     name="role"
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
                                 >
-                                    <option value="Manager">Fleet Managers</option>
+                                    <option value="Manager">Fleet Manager</option>
                                     <option value="Dispatcher">Dispatcher</option>
                                     <option value="SafetyOfficer">Safety Officer</option>
                                     <option value="FinancialAnalyst">Financial Analyst</option>
@@ -188,7 +190,6 @@ const Login = () => {
                             </button>
                         </form>
                     ) : (
-                        /* ----- STEP 2: OTP VERIFICATION FORM ----- */
                         <form onSubmit={handleOtpSubmit} className="login-form">
                             <p className="otp-instructions">
                                 An OTP has been sent to your registered device/email.
@@ -226,6 +227,7 @@ const Login = () => {
                                     setShowOtpStep(false);
                                     setOtp('');
                                     setError('');
+                                    setSuccessMsg('');
                                 }}
                                 disabled={isLoading}
                             >
@@ -236,7 +238,12 @@ const Login = () => {
 
                     {!showOtpStep && (
                         <div className="form-footer">
-                            <p>Don't have an account? <a href="#">Contact Admin</a></p>
+                            <p>
+                                Don't have an account?{' '}
+                                <a href="#" onClick={(e) => e.preventDefault()} style={{ cursor: 'pointer' }}>
+                                    Contact Admin
+                                </a>
+                            </p>
                         </div>
                     )}
                 </div>
