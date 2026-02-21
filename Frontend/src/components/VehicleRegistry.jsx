@@ -15,6 +15,10 @@ const VehicleRegistry = () => {
         model_name: ''
     });
 
+    const [isLicenseFocused, setIsLicenseFocused] = useState(false);
+    const [isPayloadFocused, setIsPayloadFocused] = useState(false);
+    const [isOdometerFocused, setIsOdometerFocused] = useState(false);
+
     useEffect(() => {
         fetchVehicles();
     }, []);
@@ -103,7 +107,18 @@ const VehicleRegistry = () => {
                                 placeholder="e.g. MH 00 AA 1234"
                                 value={formData.license_plate}
                                 onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
-                                style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem' }}
+                                onFocus={() => setIsLicenseFocused(true)}
+                                onBlur={() => setIsLicenseFocused(false)}
+                                style={{
+                                    padding: '10px 14px',
+                                    border: `1px solid ${isLicenseFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                    boxShadow: isLicenseFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '0.875rem',
+                                    backgroundColor: 'transparent',
+                                    outline: 'none',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}
                             />
                         </div>
 
@@ -114,7 +129,20 @@ const VehicleRegistry = () => {
                                 placeholder="5000"
                                 value={formData.max_capacity_kg}
                                 onChange={(e) => setFormData({ ...formData, max_capacity_kg: e.target.value })}
-                                style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', width: '100%', boxSizing: 'border-box' }}
+                                onFocus={() => setIsPayloadFocused(true)}
+                                onBlur={() => setIsPayloadFocused(false)}
+                                style={{
+                                    padding: '10px 14px',
+                                    border: `1px solid ${isPayloadFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                    boxShadow: isPayloadFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '0.875rem',
+                                    width: '100%',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: 'transparent',
+                                    outline: 'none',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}
                             />
                         </div>
 
@@ -125,7 +153,20 @@ const VehicleRegistry = () => {
                                 placeholder="79000"
                                 value={formData.odometer}
                                 onChange={(e) => setFormData({ ...formData, odometer: e.target.value })}
-                                style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', width: '100%', boxSizing: 'border-box' }}
+                                onFocus={() => setIsOdometerFocused(true)}
+                                onBlur={() => setIsOdometerFocused(false)}
+                                style={{
+                                    padding: '10px 14px',
+                                    border: `1px solid ${isOdometerFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                    boxShadow: isOdometerFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '0.875rem',
+                                    width: '100%',
+                                    boxSizing: 'border-box',
+                                    backgroundColor: 'transparent',
+                                    outline: 'none',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}
                             />
                         </div>
 

@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Layers, Filter, ArrowUpDown, MoreHorizontal, MapPin, Zap } from 'lucide-react';
+import { Search, Layers, Filter, ArrowUpDown, MoreHorizontal, MoreVertical, MapPin, Zap } from 'lucide-react';
 
 const TripDispatcher = () => {
     const [trips, setTrips] = useState([]);
     const [vehicles, setVehicles] = useState([]);
     const [drivers, setDrivers] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [isGroupByOpen, setIsGroupByOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedGroup, setSelectedGroup] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('');
+
+    const [isCargoFocused, setIsCargoFocused] = useState(false);
+    const [isOriginFocused, setIsOriginFocused] = useState(false);
+    const [isDestFocused, setIsDestFocused] = useState(false);
 
     const [formData, setFormData] = useState({
         vehicle_id: '',
@@ -89,11 +100,167 @@ const TripDispatcher = () => {
         return { bg: '#E5E7EB', text: '#374151', dot: '#6B7280' };
     };
 
+    const filteredTrips = trips.filter(trip => {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = (
+            trip.id?.toString().toLowerCase().includes(query) ||
+            trip.vehicle_id?.toString().toLowerCase().includes(query) ||
+            trip.driver_id?.toString().toLowerCase().includes(query) ||
+            trip.start_location?.toLowerCase().includes(query) ||
+            trip.end_location?.toLowerCase().includes(query) ||
+            trip.vehicle?.toLowerCase().includes(query) ||
+            trip.driver?.toLowerCase().includes(query) ||
+            trip.type?.toLowerCase().includes(query)
+        );
+        const matchesGroup = selectedGroup ? trip.type === selectedGroup : true;
+
+        let matchesFilter = true;
+        if (selectedFilter) {
+            if (selectedFilter === 'On Trip') matchesFilter = trip.status === 'OnTrip' || trip.status === 'On Trip';
+            else if (selectedFilter === 'Dispatch') matchesFilter = trip.status === 'Dispatched';
+            else if (selectedFilter === 'Complete') matchesFilter = trip.status === 'Completed';
+            else matchesFilter = trip.status === selectedFilter;
+        }
+
+        return matchesSearch && matchesGroup && matchesFilter;
+    });
+
     return (
         <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ marginBottom: '24px' }}>
                 <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Trip Dispatcher</h1>
                 <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Manage and dispatch new trips.</p>
+            </div>
+
+            {/* Toolbar */}
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: '#fff',
+                    border: `1px solid ${isSearchFocused ? '#3B82F6' : '#E2E8F0'}`,
+                    boxShadow: isSearchFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    flex: '1',
+                    minWidth: '300px',
+                    transition: 'all 0.2s ease-in-out'
+                }}>
+                    <Search size={18} color={isSearchFocused ? '#3B82F6' : '#94A3B8'} />
+                    <input
+                        type="text"
+                        placeholder="Search trips, vehicles, or drivers..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
+                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#1E293B' }}
+                    />
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setIsGroupByOpen(!isGroupByOpen)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                            <Layers size={16} /> Group by
+                        </button>
+                        {isGroupByOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                marginTop: '4px',
+                                background: '#fff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                width: '160px',
+                                zIndex: 10,
+                                overflow: 'hidden'
+                            }}>
+                                {['Heavy Duty', 'Long Haul', 'Express Delivery'].map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            padding: '8px 16px',
+                                            fontSize: '0.875rem',
+                                            color: selectedGroup === option ? '#2563EB' : '#374151',
+                                            fontWeight: selectedGroup === option ? '600' : '400',
+                                            cursor: 'pointer',
+                                            borderBottom: idx !== 2 ? '1px solid #F1F5F9' : 'none',
+                                            transition: 'all 0.2s',
+                                            backgroundColor: selectedGroup === option ? '#EFF6FF' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (selectedGroup !== option) e.target.style.backgroundColor = '#F8FAFC';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (selectedGroup !== option) e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                        onClick={() => {
+                                            setSelectedGroup(selectedGroup === option ? '' : option);
+                                            setIsGroupByOpen(false);
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setIsFilterOpen(!isFilterOpen)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                            <Filter size={16} /> Filter
+                        </button>
+                        {isFilterOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                marginTop: '4px',
+                                background: '#fff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                width: '160px',
+                                zIndex: 10,
+                                overflow: 'hidden'
+                            }}>
+                                {['On Trip', 'Dispatch', 'Delayed', 'Complete'].map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            padding: '8px 16px',
+                                            fontSize: '0.875rem',
+                                            color: selectedFilter === option ? '#2563EB' : '#374151',
+                                            fontWeight: selectedFilter === option ? '600' : '400',
+                                            cursor: 'pointer',
+                                            borderBottom: idx !== 3 ? '1px solid #F1F5F9' : 'none',
+                                            transition: 'all 0.2s',
+                                            backgroundColor: selectedFilter === option ? '#EFF6FF' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (selectedFilter !== option) e.target.style.backgroundColor = '#F8FAFC';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (selectedFilter !== option) e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                        onClick={() => {
+                                            setSelectedFilter(selectedFilter === option ? '' : option);
+                                            setIsFilterOpen(false);
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Active Trips Table */}
@@ -112,15 +279,14 @@ const TripDispatcher = () => {
                                 <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>DRIVER ID</th>
                                 <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '20%' }}>ORIGIN</th>
                                 <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '20%' }}>DESTINATION</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '10%' }}>STATUS</th>
-                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0' }}>ACTION</th>
+                                <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>STATUS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {trips.map((trip, idx) => {
+                            {filteredTrips.map((trip, idx) => {
                                 const style = getStatusStyle(trip.status);
                                 return (
-                                    <tr key={trip.id} style={{ borderBottom: idx === trips.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
+                                    <tr key={trip.id} style={{ borderBottom: idx === filteredTrips.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
                                         <td style={{ padding: '16px 0', color: '#2563EB', fontWeight: '500', fontSize: '0.875rem' }}>#{trip.id}</td>
                                         <td style={{ padding: '16px 0', color: '#334155', fontSize: '0.875rem' }}>Veh #{trip.vehicle_id}</td>
                                         <td style={{ padding: '16px 0', color: '#334155', fontSize: '0.875rem' }}>Driver #{trip.driver_id}</td>
@@ -131,10 +297,6 @@ const TripDispatcher = () => {
                                                 <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: style.dot }}></div>
                                                 {trip.status}
                                             </div>
-                                        </td>
-                                        <td style={{ padding: '16px 0', color: '#94A3B8' }}>
-                                            {trip.status === 'Draft' && <button onClick={() => updateTripStatus(trip.id, 'Draft')} style={{ padding: '4px 8px', cursor: 'pointer' }}>Mark Dispatched</button>}
-                                            {trip.status === 'Dispatched' && <button onClick={() => updateTripStatus(trip.id, 'Dispatched')} style={{ padding: '4px 8px', cursor: 'pointer' }}>Mark Completed</button>}
                                         </td>
                                     </tr>
                                 )
@@ -172,7 +334,18 @@ const TripDispatcher = () => {
                             placeholder="e.g. 12000"
                             value={formData.cargo_weight}
                             onChange={(e) => setFormData({ ...formData, cargo_weight: e.target.value })}
-                            style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem' }}
+                            onFocus={() => setIsCargoFocused(true)}
+                            onBlur={() => setIsCargoFocused(false)}
+                            style={{
+                                padding: '10px 14px',
+                                border: `1px solid ${isCargoFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                boxShadow: isCargoFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                borderRadius: '8px',
+                                fontSize: '0.875rem',
+                                backgroundColor: 'transparent',
+                                outline: 'none',
+                                transition: 'all 0.2s ease-in-out'
+                            }}
                         />
                     </div>
                 </div>
@@ -193,25 +366,41 @@ const TripDispatcher = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
                     <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Origin Address</label>
-                    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px 14px', gap: '8px' }}>
-                        <MapPin size={16} color="#94A3B8" />
+                    <div style={{
+                        display: 'flex', alignItems: 'center',
+                        border: `1px solid ${isOriginFocused ? '#3B82F6' : '#E2E8F0'}`,
+                        boxShadow: isOriginFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                        borderRadius: '8px', padding: '10px 14px', gap: '8px',
+                        transition: 'all 0.2s ease-in-out'
+                    }}>
+                        <MapPin size={16} color={isOriginFocused ? '#3B82F6' : '#94A3B8'} />
                         <input
                             type="text"
                             value={formData.start_location}
+                            onFocus={() => setIsOriginFocused(true)}
+                            onBlur={() => setIsOriginFocused(false)}
                             onChange={(e) => setFormData({ ...formData, start_location: e.target.value })}
-                            placeholder="Enter pickup location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} />
+                            placeholder="Enter pickup location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }} />
                     </div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
                     <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Destination Address</label>
-                    <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px 14px', gap: '8px' }}>
-                        <MapPin size={16} color="#94A3B8" />
+                    <div style={{
+                        display: 'flex', alignItems: 'center',
+                        border: `1px solid ${isDestFocused ? '#3B82F6' : '#E2E8F0'}`,
+                        boxShadow: isDestFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                        borderRadius: '8px', padding: '10px 14px', gap: '8px',
+                        transition: 'all 0.2s ease-in-out'
+                    }}>
+                        <MapPin size={16} color={isDestFocused ? '#3B82F6' : '#94A3B8'} />
                         <input
                             type="text"
                             value={formData.end_location}
+                            onFocus={() => setIsDestFocused(true)}
+                            onBlur={() => setIsDestFocused(false)}
                             onChange={(e) => setFormData({ ...formData, end_location: e.target.value })}
-                            placeholder="Enter drop-off location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} />
+                            placeholder="Enter drop-off location details" style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }} />
                     </div>
                 </div>
 
