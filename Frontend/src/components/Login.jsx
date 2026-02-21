@@ -82,7 +82,7 @@ const Login = () => {
             <div className="login-left-panel">
                 <div className="brand-logo">
                     <div className="logo-icon">
-                        <Package size={36} color="#ffffff" />
+                        <Package size={36} color="#2F80ED" />
                     </div>
                     <span className="logo-text">Shipzo</span>
                 </div>
