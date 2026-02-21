@@ -1,142 +1,170 @@
-import React, { useState } from 'react';
-import { Package, Search, Layers, Filter, ArrowUpDown, MoreVertical, Moon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Search, Fuel, CreditCard, Calendar } from 'lucide-react';
 import './Expense.css';
 
 const Expense = () => {
+    const [logs, setLogs] = useState([]);
+    const [vehicles, setVehicles] = useState([]);
+    const [trips, setTrips] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const [formData, setFormData] = useState({
-        tripId: '',
-        driver: '',
-        fuelCost: '',
-        miscExpense: ''
+        vehicle_id: '',
+        trip_id: '',
+        liters: '',
+        cost: '',
+        log_date: new Date().toISOString().split('T')[0]
     });
 
-    const [expenses] = useState([
-        { tripId: '321', initials: 'JD', driver: 'John Doe', distance: '1000 km', fuel: '$19,250', misc: '$3,400', status: 'Done', statusColor: 'green' },
-        { tripId: '402', initials: 'SM', driver: 'Sarah Miller', distance: '850 km', fuel: '$15,800', misc: '$1,200', status: 'Pending', statusColor: 'orange' },
-        { tripId: '558', initials: 'MW', driver: 'Mike Wilson', distance: '1,240 km', fuel: '$22,400', misc: '$5,800', status: 'Done', statusColor: 'green' },
-        { tripId: '612', initials: 'AL', driver: 'Anna Lee', distance: '420 km', fuel: '$8,100', misc: '$0', status: 'Cancelled', statusColor: 'gray' },
-    ]);
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+            const [logsRes, vehRes, tripRes] = await Promise.all([
+                axios.get('http://localhost:3000/api/logs/fuel', config),
+                axios.get('http://localhost:3000/api/vehicles', config),
+                axios.get('http://localhost:3000/api/trips', config)
+            ]);
+
+            setLogs(logsRes.data);
+            setVehicles(vehRes.data);
+            setTrips(tripRes.data);
+
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const token = localStorage.getItem('token');
+            const payload = {
+                ...formData,
+                trip_id: formData.trip_id ? parseInt(formData.trip_id) : null
+            };
+
+            await axios.post('http://localhost:3000/api/logs/fuel', payload, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            alert('Fuel log recorded successfully!');
+            setFormData({ vehicle_id: '', trip_id: '', liters: '', cost: '', log_date: new Date().toISOString().split('T')[0] });
+            fetchData();
+        } catch (err) {
+            alert(err.response?.data?.error || "Error logging expense");
+        }
     };
 
     return (
-        <div className="expense-container">
+        <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
+            <div style={{ marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Trip Expenses & Fuel Logs</h1>
+                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Track operational costs and fuel consumption per vehicle.</p>
+            </div>
 
+            <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
-            {/* Main Content Pane */}
-            <main className="expense-main">
-                {/* Search Bar Row */}
-                <div className="toolbar">
-                    <div className="search-bar">
-                        <Search size={18} color="#9CA3AF" />
-                        <input type="text" placeholder="Search logs, drivers, or trip IDs..." className="search-input" />
-                    </div>
-                    <div className="filter-group">
-                        <button className="toolbar-btn"><Layers size={16} /> Group by</button>
-                        <button className="toolbar-btn"><Filter size={16} /> Filter</button>
-                        <button className="toolbar-btn"><ArrowUpDown size={16} /> Sort by</button>
-                    </div>
+                {/* Form side */}
+                <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '0 0 340px' }}>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', marginBottom: '20px' }}>Log Fuel Expense</h3>
+
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Vehicle</label>
+                            <select
+                                required
+                                value={formData.vehicle_id}
+                                onChange={e => setFormData({ ...formData, vehicle_id: e.target.value })}
+                                style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem' }}
+                            >
+                                <option value="">Select a Vehicle...</option>
+                                {vehicles.map(v => <option key={v.id} value={v.id}>{v.license_plate} ({v.model_name})</option>)}
+                            </select>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Associated Trip (Optional)</label>
+                            <select
+                                value={formData.trip_id}
+                                onChange={e => setFormData({ ...formData, trip_id: e.target.value })}
+                                style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem' }}
+                            >
+                                <option value="">None (General Refuel)</option>
+                                {trips.map(t => <option key={t.id} value={t.id}>Trip #{t.id} ({t.start_location} → {t.end_location})</option>)}
+                            </select>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Liters</label>
+                                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px' }}>
+                                    <Fuel size={14} color="#94A3B8" style={{ marginRight: '8px' }} />
+                                    <input type="number" step="0.1" required value={formData.liters} onChange={e => setFormData({ ...formData, liters: e.target.value })} style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} placeholder="0.0" />
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Total Cost (₹)</label>
+                                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px' }}>
+                                    <CreditCard size={14} color="#94A3B8" style={{ marginRight: '8px' }} />
+                                    <input type="number" step="0.01" required value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} placeholder="0.00" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Date</label>
+                            <input
+                                type="date"
+                                required
+                                value={formData.log_date}
+                                onChange={e => setFormData({ ...formData, log_date: e.target.value })}
+                                style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem' }}
+                            />
+                        </div>
+
+                        <button type="submit" style={{ background: '#2563EB', color: '#fff', padding: '12px', borderRadius: '8px', border: 'none', fontWeight: '500', marginTop: '10px', cursor: 'pointer' }}>Save Fuel Log</button>
+                    </form>
                 </div>
 
-                {/* Content Split: Form & Table */}
-                <div className="expense-content-split">
-                    {/* Form Left Side */}
-                    <div className="expense-form-panel">
-                        <div className="panel-header">
-                            <Layers size={20} color="#3B82F6" />
-                            <h3>New Expense</h3>
-                        </div>
-                        <form className="expense-form">
-                            <div className="input-group">
-                                <label>Trip ID</label>
-                                <input type="text" name="tripId" placeholder="e.g. TRP-321" value={formData.tripId} onChange={handleChange} />
-                            </div>
-                            <div className="input-group">
-                                <label>Driver</label>
-                                <select name="driver" value={formData.driver} onChange={handleChange}>
-                                    <option value="" disabled>Search driver...</option>
-                                    <option value="JD">John Doe</option>
-                                    <option value="SM">Sarah Miller</option>
-                                </select>
-                            </div>
-                            <div className="row-inputs">
-                                <div className="input-group half">
-                                    <label>Fuel Cost</label>
-                                    <div className="currency-input">
-                                        <span>$</span>
-                                        <input type="number" name="fuelCost" placeholder="0.00" value={formData.fuelCost} onChange={handleChange} />
-                                    </div>
-                                </div>
-                                <div className="input-group half">
-                                    <label>Misc Expense</label>
-                                    <div className="currency-input">
-                                        <span>$</span>
-                                        <input type="number" name="miscExpense" placeholder="0.00" value={formData.miscExpense} onChange={handleChange} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="form-actions">
-                                <button type="button" className="btn-primary">Create Log</button>
-                                <button type="button" className="btn-secondary">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
+                {/* Table side */}
+                <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '1', minWidth: '500px' }}>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', marginBottom: '20px' }}>Recent Fuel Transactions</h3>
 
-                    {/* Table Right Side */}
-                    <div className="expense-table-panel">
-                        <table className="expense-table">
+                    {loading ? <p>Loading logs...</p> : (
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                             <thead>
                                 <tr>
-                                    <th>TRIP ID</th>
-                                    <th>DRIVER</th>
-                                    <th>DISTANCE</th>
-                                    <th>FUEL EXPENSE</th>
-                                    <th>MISC. EXPEN</th>
-                                    <th>STATUS</th>
-                                    <th></th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>DATE</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>VEHICLE</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>TRIP ID</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>VOLUME</th>
+                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px', borderBottom: '1px solid #E2E8F0' }}>TOTAL COST</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {expenses.map((exp, i) => (
-                                    <tr key={i}>
-                                        <td className="fw-bold">{exp.tripId}</td>
-                                        <td>
-                                            <div className="driver-cell">
-                                                <div className={`driver-avatar bg-${exp.initials.toLowerCase()}`}>
-                                                    {exp.initials}
-                                                </div>
-                                                <span>{exp.driver}</span>
-                                            </div>
-                                        </td>
-                                        <td>{exp.distance}</td>
-                                        <td>{exp.fuel}</td>
-                                        <td>{exp.misc}</td>
-                                        <td>
-                                            <span className={`status-badge stat-${exp.statusColor}`}>
-                                                <span className="dot"></span> {exp.status}
-                                            </span>
-                                        </td>
-                                        <td className="more-btn"><MoreVertical size={16} color="#9CA3AF" /></td>
+                                {logs.map((log) => (
+                                    <tr key={log.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
+                                        <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{new Date(log.log_date).toLocaleDateString()}</td>
+                                        <td style={{ padding: '16px 12px', color: '#1E293B', fontSize: '0.875rem', fontWeight: '500' }}>Veh #{log.vehicle_id}</td>
+                                        <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{log.trip_id ? `#TRP-${log.trip_id}` : '--'}</td>
+                                        <td style={{ padding: '16px 12px', color: '#475569', fontSize: '0.875rem' }}>{log.liters} L</td>
+                                        <td style={{ padding: '16px 12px', color: '#10B981', fontSize: '0.875rem', fontWeight: '600' }}>₹{log.cost}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                        {/* Pagination placeholder */}
-                        <div className="pagination">
-                            <span>Showing 1 to 4 of 24 entries</span>
-                            <div className="page-controls">
-                                <button className="page-btn">{'<'}</button>
-                                <button className="page-btn active">1</button>
-                                <button className="page-btn">2</button>
-                                <button className="page-btn">3</button>
-                                <button className="page-btn">{'>'}</button>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </div>
-            </main>
+            </div>
         </div>
     );
 };
