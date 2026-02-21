@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Truck, AlertTriangle, Activity, PackageCheck, Search } from 'lucide-react';
+import { Truck, AlertTriangle, Activity, PackageCheck, Search, Layers, Filter } from 'lucide-react';
 
 const DashboardOverview = () => {
     const [vehicles, setVehicles] = useState([]);
     const [trips, setTrips] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const [isGroupByOpen, setIsGroupByOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedGroup, setSelectedGroup] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('');
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,7 +41,27 @@ const DashboardOverview = () => {
         fetchData();
     }, []);
 
-    const navigate = useNavigate();
+    const filteredVehicles = vehicles.filter(v => {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = (
+            v.model_name?.toLowerCase().includes(query) ||
+            v.license_plate?.toLowerCase().includes(query) ||
+            v.id?.toString().toLowerCase().includes(query) ||
+            v.vehicle_type?.toLowerCase().includes(query)
+        );
+        const matchesGroup = selectedGroup ? v.vehicle_type === selectedGroup : true;
+
+        let matchesFilter = true;
+        if (selectedFilter) {
+            if (selectedFilter === 'On Trip') matchesFilter = v.status === 'OnTrip';
+            else if (selectedFilter === 'Dispatch') matchesFilter = v.status === 'Available';
+            else if (selectedFilter === 'Delayed') matchesFilter = v.status === 'InShop';
+            else if (selectedFilter === 'Complete') matchesFilter = v.status === 'Available';
+            else matchesFilter = v.status === selectedFilter;
+        }
+
+        return matchesSearch && matchesGroup && matchesFilter;
+    });
 
     // Calculate KPIs
     const onTripVehicles = vehicles.filter(v => v.status === 'OnTrip').length;
@@ -107,6 +136,137 @@ const DashboardOverview = () => {
                 </div>
             </div>
 
+            {/* Toolbar */}
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: '#fff',
+                    border: `1px solid ${isSearchFocused ? '#3B82F6' : '#E2E8F0'}`,
+                    boxShadow: isSearchFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    flex: '1',
+                    minWidth: '300px',
+                    transition: 'all 0.2s ease-in-out'
+                }}>
+                    <Search size={18} color={isSearchFocused ? '#3B82F6' : '#94A3B8'} />
+                    <input
+                        type="text"
+                        placeholder="Search vehicles, drivers, or trips..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
+                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#1E293B' }}
+                    />
+                </div>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setIsGroupByOpen(!isGroupByOpen)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                            <Layers size={16} /> Group by
+                        </button>
+                        {isGroupByOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                marginTop: '4px',
+                                background: '#fff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                width: '160px',
+                                zIndex: 10,
+                                overflow: 'hidden'
+                            }}>
+                                {['Heavy Duty', 'Long Haul', 'Express Delivery'].map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            padding: '8px 16px',
+                                            fontSize: '0.875rem',
+                                            color: selectedGroup === option ? '#2563EB' : '#374151',
+                                            fontWeight: selectedGroup === option ? '600' : '400',
+                                            cursor: 'pointer',
+                                            borderBottom: idx !== 2 ? '1px solid #F1F5F9' : 'none',
+                                            transition: 'all 0.2s',
+                                            backgroundColor: selectedGroup === option ? '#EFF6FF' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (selectedGroup !== option) e.target.style.backgroundColor = '#F8FAFC';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (selectedGroup !== option) e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                        onClick={() => {
+                                            setSelectedGroup(selectedGroup === option ? '' : option);
+                                            setIsGroupByOpen(false);
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setIsFilterOpen(!isFilterOpen)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                            <Filter size={16} /> Filter
+                        </button>
+                        {isFilterOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                marginTop: '4px',
+                                background: '#fff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                width: '160px',
+                                zIndex: 10,
+                                overflow: 'hidden'
+                            }}>
+                                {['On Trip', 'Dispatch', 'Delayed', 'Complete'].map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            padding: '8px 16px',
+                                            fontSize: '0.875rem',
+                                            color: selectedFilter === option ? '#2563EB' : '#374151',
+                                            fontWeight: selectedFilter === option ? '600' : '400',
+                                            cursor: 'pointer',
+                                            borderBottom: idx !== 3 ? '1px solid #F1F5F9' : 'none',
+                                            transition: 'all 0.2s',
+                                            backgroundColor: selectedFilter === option ? '#EFF6FF' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (selectedFilter !== option) e.target.style.backgroundColor = '#F8FAFC';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (selectedFilter !== option) e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                        onClick={() => {
+                                            setSelectedFilter(selectedFilter === option ? '' : option);
+                                            setIsFilterOpen(false);
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
             {/* Quick Fleet Table */}
             <div style={{ background: 'white', borderRadius: '8px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
                 <div style={{ padding: '1rem 1.5rem', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -124,7 +284,7 @@ const DashboardOverview = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {vehicles.map(v => (
+                        {filteredVehicles.map(v => (
                             <tr key={v.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
                                 <td style={{ padding: '1rem 1.5rem', fontWeight: '500' }}>#{v.id}</td>
                                 <td style={{ padding: '1rem 1.5rem' }}>{v.model_name}<br /><span style={{ fontSize: '0.75rem', color: '#000' }}>{v.vehicle_type}</span></td>
