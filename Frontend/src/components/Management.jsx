@@ -21,8 +21,8 @@ const Management = () => {
             const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
             const [logsRes, vehRes] = await Promise.all([
-                axios.get('http://localhost:3000/api/logs/maintenance', config),
-                axios.get('http://localhost:3000/api/vehicles', config)
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/logs/maintenance`, config),
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, config)
             ]);
 
             const mergedLogs = [
@@ -61,7 +61,7 @@ const Management = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            await axios.post('http://localhost:3000/api/logs/maintenance', formData, {
+            await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/logs/maintenance`, formData, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             alert('Maintenance log recorded - Vehicle is now marked InShop!');

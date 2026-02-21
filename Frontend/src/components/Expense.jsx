@@ -43,9 +43,9 @@ const Expense = () => {
             const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
             const [logsRes, vehRes, tripRes] = await Promise.all([
-                axios.get('http://localhost:3000/api/logs/fuel', config),
-                axios.get('http://localhost:3000/api/vehicles', config),
-                axios.get('http://localhost:3000/api/trips', config)
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/logs/fuel`, config),
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, config),
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/trips`, config)
             ]);
 
             setLogs(logsRes.data);
@@ -72,7 +72,7 @@ const Expense = () => {
                 trip_id: formData.trip_id ? parseInt(formData.trip_id) : null
             };
 
-            await axios.post('http://localhost:3000/api/logs/fuel', payload, {
+            await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/logs/fuel`, payload, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 

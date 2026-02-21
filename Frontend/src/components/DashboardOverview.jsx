@@ -25,8 +25,8 @@ const DashboardOverview = () => {
 
                 // Fetch vehicles and trips for KPIs
                 const [vehRes, tripRes] = await Promise.all([
-                    axios.get('http://localhost:3000/api/vehicles', config),
-                    axios.get('http://localhost:3000/api/trips', config)
+                    axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, config),
+                    axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/trips`, config)
                 ]);
 
                 setVehicles(vehRes.data);
