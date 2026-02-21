@@ -43,6 +43,8 @@ const Login = () => {
                 // Custom routing based on role
                 if (role === 'FinancialAnalyst') {
                     navigate('/expense');
+                } else if (role === 'Dispatcher') {
+                    navigate('/management');
                 } else {
                     navigate('/dashboard');
                 }
@@ -72,6 +74,8 @@ const Login = () => {
                 localStorage.setItem('token', response.data.token);
                 if (role === 'FinancialAnalyst') {
                     navigate('/expense');
+                } else if (role === 'Dispatcher') {
+                    navigate('/management');
                 } else {
                     navigate('/dashboard');
                 }
