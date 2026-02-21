@@ -26,7 +26,7 @@ const VehicleRegistry = () => {
     const fetchVehicles = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:3000/api/vehicles', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setVehicles(res.data);
@@ -43,7 +43,7 @@ const VehicleRegistry = () => {
             // Assuming acquisition_cost defaults in db or not required, and status defaults to Available
             const payload = { ...formData, acquisition_cost: 0 };
 
-            await axios.post('http://localhost:3000/api/vehicles', payload, {
+            await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, payload, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -68,7 +68,7 @@ const VehicleRegistry = () => {
         const newStatus = currentStatus === 'Available' ? 'Retired' : 'Available';
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:3000/api/vehicles/${id}/status`, { status: newStatus }, {
+            await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles/${id}/status`, { status: newStatus }, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             fetchVehicles();

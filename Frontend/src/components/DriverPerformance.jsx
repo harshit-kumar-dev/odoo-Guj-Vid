@@ -16,7 +16,7 @@ const DriverPerformance = () => {
         const fetchDrivers = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:3000/api/drivers', {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/drivers`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

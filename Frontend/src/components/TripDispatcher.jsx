@@ -33,9 +33,9 @@ const TripDispatcher = () => {
             const config = { headers: { 'Authorization': `Bearer ${token}` } };
 
             const [tripRes, vehRes, driRes] = await Promise.all([
-                axios.get('http://localhost:3000/api/trips', config),
-                axios.get('http://localhost:3000/api/vehicles', config),
-                axios.get('http://localhost:3000/api/drivers', config),
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/trips`, config),
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, config),
+                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/drivers`, config),
             ]);
 
             setTrips(tripRes.data);
@@ -63,7 +63,7 @@ const TripDispatcher = () => {
                 return;
             }
 
-            await axios.post('http://localhost:3000/api/trips', formData, {
+            await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/trips`, formData, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -84,7 +84,7 @@ const TripDispatcher = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:3000/api/trips/${id}/status`, { status: newStatus }, {
+            await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/trips/${id}/status`, { status: newStatus }, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             fetchData();

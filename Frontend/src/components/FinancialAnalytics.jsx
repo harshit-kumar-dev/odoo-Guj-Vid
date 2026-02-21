@@ -12,7 +12,7 @@ const FinancialAnalytics = () => {
         const fetchVehicles = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get('http://localhost:3000/api/vehicles', {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setVehicles(res.data);
@@ -33,7 +33,7 @@ const FinancialAnalytics = () => {
             setLoading(true);
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get(`http://localhost:3000/api/analytics/vehicle/${selectedVehicle}`, {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/analytics/vehicle/${selectedVehicle}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setAnalytics(res.data);
