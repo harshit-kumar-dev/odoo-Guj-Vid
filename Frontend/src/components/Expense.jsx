@@ -25,6 +25,10 @@ const Expense = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
 
+    const [isLitersFocused, setIsLitersFocused] = useState(false);
+    const [isCostFocused, setIsCostFocused] = useState(false);
+    const [isDateFocused, setIsDateFocused] = useState(false);
+
     // Debounce Search
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -156,16 +160,44 @@ const Expense = () => {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                                 <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Liters</label>
-                                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px' }}>
-                                    <Fuel size={14} color="#94A3B8" style={{ marginRight: '8px' }} />
-                                    <input type="number" step="0.1" required value={formData.liters} onChange={e => setFormData({ ...formData, liters: e.target.value })} style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} placeholder="0.0" />
+                                <div style={{
+                                    display: 'flex', alignItems: 'center',
+                                    border: `1px solid ${isLitersFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                    boxShadow: isLitersFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                    borderRadius: '8px', padding: '10px',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}>
+                                    <Fuel size={14} color={isLitersFocused ? '#3B82F6' : '#94A3B8'} style={{ marginRight: '8px' }} />
+                                    <input
+                                        type="number" step="0.1" required
+                                        value={formData.liters}
+                                        onFocus={() => setIsLitersFocused(true)}
+                                        onBlur={() => setIsLitersFocused(false)}
+                                        onChange={e => setFormData({ ...formData, liters: e.target.value })}
+                                        style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }}
+                                        placeholder="0.0"
+                                    />
                                 </div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
                                 <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Cost (₹)</label>
-                                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '10px' }}>
-                                    <CreditCard size={14} color="#94A3B8" style={{ marginRight: '8px' }} />
-                                    <input type="number" step="0.01" required value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem' }} placeholder="0.00" />
+                                <div style={{
+                                    display: 'flex', alignItems: 'center',
+                                    border: `1px solid ${isCostFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                    boxShadow: isCostFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                    borderRadius: '8px', padding: '10px',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}>
+                                    <CreditCard size={14} color={isCostFocused ? '#3B82F6' : '#94A3B8'} style={{ marginRight: '8px' }} />
+                                    <input
+                                        type="number" step="0.01" required
+                                        value={formData.cost}
+                                        onFocus={() => setIsCostFocused(true)}
+                                        onBlur={() => setIsCostFocused(false)}
+                                        onChange={e => setFormData({ ...formData, cost: e.target.value })}
+                                        style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }}
+                                        placeholder="0.00"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -176,8 +208,19 @@ const Expense = () => {
                                 type="date"
                                 required
                                 value={formData.log_date}
+                                onFocus={() => setIsDateFocused(true)}
+                                onBlur={() => setIsDateFocused(false)}
                                 onChange={e => setFormData({ ...formData, log_date: e.target.value })}
-                                style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem' }}
+                                style={{
+                                    padding: '10px',
+                                    border: `1px solid ${isDateFocused ? '#3B82F6' : '#E2E8F0'}`,
+                                    boxShadow: isDateFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '0.875rem',
+                                    backgroundColor: 'transparent',
+                                    outline: 'none',
+                                    transition: 'all 0.2s ease-in-out'
+                                }}
                             />
                         </div>
 
@@ -187,10 +230,10 @@ const Expense = () => {
 
                 {/* Table side */}
                 <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '1', minWidth: '500px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
-                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', margin: 0 }}>Trips & Associated Expenses</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', margin: 0 }}>Fleet Trip Expense Summary</h3>
 
-                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', maxWidth: '300px' }}>
                             <div style={{
                                 display: 'flex',
                                 alignItems: 'center',
@@ -198,8 +241,8 @@ const Expense = () => {
                                 border: '1px solid #E2E8F0',
                                 borderRadius: '8px',
                                 padding: '8px 16px',
-                                flex: '1',
-                                maxWidth: '300px',
+                                width: '100%',
+                                boxSizing: 'border-box'
                             }}>
                                 <Search size={18} color="#000" />
                                 <input
@@ -211,52 +254,56 @@ const Expense = () => {
                                 />
                             </div>
 
-                            <div style={{ position: 'relative' }}>
-                                <button
-                                    onClick={() => { setIsFilterOpen(!isFilterOpen); setIsSortOpen(false); }}
-                                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
-                                >
-                                    <Filter size={16} /> Filter: {filterStatus === 'All' ? 'Null' : filterStatus} <ChevronDown size={14} />
-                                </button>
-                                {isFilterOpen && (
-                                    <div style={{
-                                        position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', minWidth: '150px', zIndex: 10
-                                    }}>
-                                        {['All', 'Done', 'Pending', 'Cancelled'].map((option) => (
-                                            <div
-                                                key={option}
-                                                style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: filterStatus === option ? '#EFF6FF' : '#fff', color: filterStatus === option ? '#2563EB' : '#334155' }}
-                                                onClick={() => { setFilterStatus(option); setIsFilterOpen(false); }}
-                                            >
-                                                {option === 'All' ? 'Null (All Data)' : option}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                            <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+                                <div style={{ position: 'relative', flex: 1 }}>
+                                    <button
+                                        onClick={() => { setIsFilterOpen(!isFilterOpen); setIsSortOpen(false); }}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxSizing: 'border-box', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                                    >
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Filter size={16} /> {filterStatus === 'All' ? 'Null' : filterStatus}</span>
+                                        <ChevronDown size={14} />
+                                    </button>
+                                    {isFilterOpen && (
+                                        <div style={{
+                                            position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', zIndex: 10, overflow: 'hidden'
+                                        }}>
+                                            {['All', 'Done', 'Pending', 'Cancelled'].map((option) => (
+                                                <div
+                                                    key={option}
+                                                    style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: filterStatus === option ? '#EFF6FF' : '#fff', color: filterStatus === option ? '#2563EB' : '#334155' }}
+                                                    onClick={() => { setFilterStatus(option); setIsFilterOpen(false); }}
+                                                >
+                                                    {option === 'All' ? 'Null' : option}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
 
-                            <div style={{ position: 'relative' }}>
-                                <button
-                                    onClick={() => { setIsSortOpen(!isSortOpen); setIsFilterOpen(false); }}
-                                    style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
-                                >
-                                    <ArrowUpDown size={16} /> Sort: {sortDistance === 'Neutral' ? 'Neutral' : (sortDistance === 'Ascending' ? 'Dist Asc' : 'Dist Desc')} <ChevronDown size={14} />
-                                </button>
-                                {isSortOpen && (
-                                    <div style={{
-                                        position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', minWidth: '180px', zIndex: 10
-                                    }}>
-                                        {['Neutral', 'Ascending', 'Descending'].map((option) => (
-                                            <div
-                                                key={option}
-                                                style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: sortDistance === option ? '#EFF6FF' : '#fff', color: sortDistance === option ? '#2563EB' : '#334155' }}
-                                                onClick={() => { setSortDistance(option); setIsSortOpen(false); }}
-                                            >
-                                                {option === 'Neutral' ? 'Neutral' : (option === 'Ascending' ? 'Ascending (Distance)' : 'Descending (Distance)')}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                <div style={{ position: 'relative', flex: 1 }}>
+                                    <button
+                                        onClick={() => { setIsSortOpen(!isSortOpen); setIsFilterOpen(false); }}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', boxSizing: 'border-box', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                                    >
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><ArrowUpDown size={16} /> {sortDistance === 'Neutral' ? 'Neutral' : (sortDistance === 'Ascending' ? 'Asc' : 'Desc')}</span>
+                                        <ChevronDown size={14} />
+                                    </button>
+                                    {isSortOpen && (
+                                        <div style={{
+                                            position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '4px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', zIndex: 10, overflow: 'hidden'
+                                        }}>
+                                            {['Neutral', 'Ascending', 'Descending'].map((option) => (
+                                                <div
+                                                    key={option}
+                                                    style={{ padding: '8px 16px', fontSize: '0.875rem', cursor: 'pointer', background: sortDistance === option ? '#EFF6FF' : '#fff', color: sortDistance === option ? '#2563EB' : '#334155' }}
+                                                    onClick={() => { setSortDistance(option); setIsSortOpen(false); }}
+                                                >
+                                                    {option === 'Neutral' ? 'Neutral' : (option === 'Ascending' ? 'Asc' : 'Desc')}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
