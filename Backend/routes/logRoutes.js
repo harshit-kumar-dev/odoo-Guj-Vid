@@ -6,6 +6,7 @@ const auth = require('../middlewares/authMiddleware');
 router.use(auth);
 
 router.post('/maintenance', logController.createMaintenanceLog);
+router.get('/maintenance', logController.getAllMaintenanceLogs);
 router.post('/fuel', logController.createFuelLog);
 router.get('/vehicle/:vehicle_id', logController.getLogsByVehicle);
 
