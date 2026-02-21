@@ -1,7 +1,3 @@
--- schema.sql
--- Run this in your Neon SQL editor
-
--- 1. Users
 CREATE TABLE IF NOT EXISTS Users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -11,7 +7,6 @@ CREATE TABLE IF NOT EXISTS Users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Vehicles
 CREATE TABLE IF NOT EXISTS Vehicles (
     id SERIAL PRIMARY KEY,
     model_name VARCHAR(255) NOT NULL,
@@ -24,7 +19,6 @@ CREATE TABLE IF NOT EXISTS Vehicles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Drivers
 CREATE TABLE IF NOT EXISTS Drivers (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -35,7 +29,6 @@ CREATE TABLE IF NOT EXISTS Drivers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. Trips
 CREATE TABLE IF NOT EXISTS Trips (
     id SERIAL PRIMARY KEY,
     vehicle_id INT NOT NULL,
@@ -51,7 +44,6 @@ CREATE TABLE IF NOT EXISTS Trips (
     CONSTRAINT fk_trips_driver FOREIGN KEY (driver_id) REFERENCES Drivers(id) ON DELETE CASCADE
 );
 
--- 5. MaintenanceLogs
 CREATE TABLE IF NOT EXISTS MaintenanceLogs (
     id SERIAL PRIMARY KEY,
     vehicle_id INT NOT NULL,
@@ -61,11 +53,10 @@ CREATE TABLE IF NOT EXISTS MaintenanceLogs (
     CONSTRAINT fk_maint_vehicle FOREIGN KEY (vehicle_id) REFERENCES Vehicles(id) ON DELETE CASCADE
 );
 
--- 6. FuelLogs
 CREATE TABLE IF NOT EXISTS FuelLogs (
     id SERIAL PRIMARY KEY,
     vehicle_id INT NOT NULL,
-    trip_id INT, -- nullable
+    trip_id INT,
     liters NUMERIC(10, 2) NOT NULL,
     cost NUMERIC(10, 2) NOT NULL,
     log_date DATE NOT NULL DEFAULT CURRENT_DATE,
