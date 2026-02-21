@@ -1,0 +1,345 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.login-wrapper {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+/* --------------------
+   LEFT PANEL (Dark)
+   -------------------- */
+.login-left-panel {
+    flex: 1;
+    /* Deep dark navy background from reference image */
+    background: linear-gradient(135deg, #1C2433 0%, #101620 100%);
+    color: #ffffff;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Brand Logo (Shipzo concept) */
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    background: transparent;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.logo-text {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    /* Shipzo Blue from reference image */
+    color: #2F80ED;
+}
+
+/* Hero Section */
+.hero-text {
+    max-width: 480px;
+    margin-top: -60px;
+}
+
+.hero-text h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.hero-text p {
+    color: #9CA3AF;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Stats Section */
+.stats-row {
+    display: flex;
+    gap: 16px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 24px;
+    flex: 1;
+}
+
+.stat-card h2 {
+    /* Mint accent from reference */
+    color: #2CD69D;
+    font-size: 2rem;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+}
+
+.stat-card p {
+    color: #8B949E;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+/* --------------------
+   RIGHT PANEL (Light)
+   -------------------- */
+.login-right-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background-color: #ffffff;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+.form-container h2 {
+    color: #111827;
+    font-size: 2.25rem;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    color: #6B7280;
+    margin-bottom: 32px;
+    font-size: 1rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.forgot-password {
+    /* Mint accent for links as well */
+    color: #2CD69D;
+    font-size: 0.875rem;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+/* Form Inputs */
+select,
+.input-with-icon input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #111827;
+    outline: none;
+    transition: all 0.2s;
+    background: #ffffff;
+}
+
+select {
+    appearance: auto;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    padding-left: 44px;
+}
+
+.input-with-icon .icon {
+    position: absolute;
+    left: 14px;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-with-icon .icon-right {
+    position: absolute;
+    right: 14px;
+    color: #9CA3AF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+select:focus,
+.input-with-icon input:focus {
+    border-color: #2F80ED;
+    box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+}
+
+select::placeholder,
+.input-with-icon input::placeholder {
+    color: #9CA3AF;
+}
+
+/* Sign In Button */
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: #1E2532;
+    /* Match the dark theme button color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 8px;
+}
+
+.submit-btn:hover {
+    background-color: #0F172A;
+}
+
+/* Footer Links */
+.form-footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 0.875rem;
+    color: #6B7280;
+}
+
+.form-footer a {
+    color: #2CD69D;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+    .login-left-panel {
+        padding: 3rem;
+    }
+
+    .hero-text h1 {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-wrapper {
+        flex-direction: column;
+    }
+
+    .login-left-panel {
+        padding: 2.5rem;
+        min-height: auto;
+        gap: 40px;
+    }
+
+    .hero-text {
+        margin-top: 0;
+    }
+
+    .hero-text h1 {
+        font-size: 2.5rem;
+    }
+
+    .stats-row {
+        flex-wrap: wrap;
+    }
+
+    .login-right-panel {
+        padding: 2.5rem;
+    }
+}
+
+/* --------------------
+   OTP & ERROR STYLES
+   -------------------- */
+.error-message {
+    background-color: #FEE2E2;
+    color: #DC2626;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid #F87171;
+}
+
+.otp-instructions {
+    color: #6B7280;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.back-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: transparent;
+    color: #4B5563;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+}
+
+.back-btn:hover {
+    background-color: #F3F4F6;
+    color: #111827;
+}
+
+.submit-btn:disabled,
+.back-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
