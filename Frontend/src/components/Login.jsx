@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Package, Mail, Lock, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { Package, Mail, Lock, Eye, EyeOff, KeyRound, CarFront } from 'lucide-react';
 import './Login.css';
 
 const Login = () => {
@@ -61,10 +61,10 @@ const Login = () => {
             {/* Left Panel */}
             <div className="login-left-panel">
                 <div className="brand-logo">
-                    <div className="logo-icon">
-                        <Package size={36} color="#2F80ED" />
+                    <div className="logo-icon blue-logo">
+                        <CarFront size={24} color="#ffffff" />
                     </div>
-                    <span className="logo-text">Shipzo</span>
+                    <span className="logo-text" style={{ color: '#3B82F6' }}>Shipzo</span>
                 </div>
 
                 <div className="hero-text">
