@@ -87,21 +87,21 @@ const VehicleRegistry = () => {
     return (
         <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Vehicle Registry</h1>
-                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Manage your fleet assets.</p>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#000000', marginBottom: '4px' }}>Vehicle Registry</h1>
+                <p style={{ color: '#000000', fontSize: '0.875rem' }}>Manage your fleet assets.</p>
             </div>
 
             <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                 {/* Form side */}
                 <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', flex: '0 0 320px' }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1E293B', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ color: '#1E293B' }}>✦</span> New Vehicle Registration
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#000000', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ color: '#000000' }}>✦</span> New Vehicle Registration
                     </h3>
-                    <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '24px' }}>Add a new asset to your fleet registry.</p>
+                    <p style={{ color: '#000000', fontSize: '0.875rem', marginBottom: '24px' }}>Add a new asset to your fleet registry.</p>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>License Plate</label>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>License Plate</label>
                             <input
                                 type="text"
                                 placeholder="e.g. MH 00 AA 1234"
@@ -123,7 +123,7 @@ const VehicleRegistry = () => {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Max Payload (kg)</label>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Max Payload (kg)</label>
                             <input
                                 type="number"
                                 placeholder="5000"
@@ -147,7 +147,7 @@ const VehicleRegistry = () => {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Initial Odometer (km)</label>
+                            <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Initial Odometer (km)</label>
                             <input
                                 type="number"
                                 placeholder="79000"
@@ -172,11 +172,11 @@ const VehicleRegistry = () => {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Type</label>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Type</label>
                                 <select
                                     value={formData.vehicle_type}
                                     onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value })}
-                                    style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', color: '#334155', background: '#fff' }}
+                                    style={{ padding: '10px 14px', border: '1px solid #E2E8F0', borderRadius: '8px', fontSize: '0.875rem', color: '#000000', background: '#fff' }}
                                 >
                                     <option value="Truck">Truck</option>
                                     <option value="Van">Van</option>
@@ -184,7 +184,7 @@ const VehicleRegistry = () => {
                                 </select>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#334155' }}>Model</label>
+                                <label style={{ fontSize: '0.875rem', fontWeight: '500', color: '#000000' }}>Model</label>
                                 <input
                                     type="text"
                                     placeholder="TATA 407"
@@ -197,7 +197,7 @@ const VehicleRegistry = () => {
                     </div>
 
                     <div style={{ display: 'flex', gap: '12px', marginTop: '30px' }}>
-                        <button onClick={handleSave} style={{ background: '#2563EB', color: '#fff', padding: '10px 24px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '0.875rem', cursor: 'pointer', flex: 1 }}>Save Vehicle</button>
+                        <button onClick={handleSave} style={{ background: '#2563EB', color: '#000000', padding: '10px 24px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '0.875rem', cursor: 'pointer', flex: 1 }}>Save Vehicle</button>
                     </div>
                 </div>
 
@@ -207,13 +207,13 @@ const VehicleRegistry = () => {
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                             <thead>
                                 <tr>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>ID</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>PLATE</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>MODEL / TYPE</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>CAPACITY</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>ODOMETER</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>STATUS</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>TOGGLE STATUS</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>ID</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>PLATE</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>MODEL / TYPE</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>CAPACITY</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>ODOMETER</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>STATUS</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0' }}>TOGGLE STATUS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -221,11 +221,11 @@ const VehicleRegistry = () => {
                                     const style = getStatusStyle(v.status);
                                     return (
                                         <tr key={v.id} style={{ borderBottom: idx === vehicles.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
-                                            <td style={{ padding: '16px 16px', color: '#475569', fontSize: '0.875rem' }}>#{v.id}</td>
-                                            <td style={{ padding: '16px 16px', color: '#1E293B', fontSize: '0.875rem', fontWeight: '600' }}>{v.license_plate}</td>
-                                            <td style={{ padding: '16px 16px', color: '#475569', fontSize: '0.875rem' }}>{v.model_name}<br /><small>{v.vehicle_type}</small></td>
-                                            <td style={{ padding: '16px 16px', color: '#475569', fontSize: '0.875rem' }}>{v.max_capacity_kg} kg</td>
-                                            <td style={{ padding: '16px 16px', color: '#475569', fontSize: '0.875rem' }}>{v.odometer}</td>
+                                            <td style={{ padding: '16px 16px', color: '#000000', fontSize: '0.875rem' }}>#{v.id}</td>
+                                            <td style={{ padding: '16px 16px', color: '#000000', fontSize: '0.875rem', fontWeight: '600' }}>{v.license_plate}</td>
+                                            <td style={{ padding: '16px 16px', color: '#000000', fontSize: '0.875rem' }}>{v.model_name}<br /><small>{v.vehicle_type}</small></td>
+                                            <td style={{ padding: '16px 16px', color: '#000000', fontSize: '0.875rem' }}>{v.max_capacity_kg} kg</td>
+                                            <td style={{ padding: '16px 16px', color: '#000000', fontSize: '0.875rem' }}>{v.odometer}</td>
                                             <td style={{ padding: '16px 16px' }}>
                                                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: style.bg, color: style.text, padding: '4px 10px', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: '500' }}>
                                                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: style.dot }}></div>
@@ -241,8 +241,8 @@ const VehicleRegistry = () => {
                                                         {v.status === 'Available' ? 'Retire' : 'Activate'}
                                                     </button>
                                                 )}
-                                                {v.status === 'OnTrip' && <span style={{ fontSize: '0.75rem', color: '#6B7280' }}>On Trip</span>}
-                                                {v.status === 'InShop' && <span style={{ fontSize: '0.75rem', color: '#6B7280' }}>In Shop</span>}
+                                                {v.status === 'OnTrip' && <span style={{ fontSize: '0.75rem', color: '#000000' }}>On Trip</span>}
+                                                {v.status === 'InShop' && <span style={{ fontSize: '0.75rem', color: '#000000' }}>In Shop</span>}
                                             </td>
                                         </tr>
                                     )

@@ -90,8 +90,8 @@ const DriverPerformance = () => {
     return (
         <div style={{ padding: '24px', fontFamily: 'Inter, sans-serif' }}>
             <div style={{ marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '4px' }}>Driver Performance</h1>
-                <p style={{ color: '#64748B', fontSize: '0.875rem' }}>Monitor and manage your fleet's driver safety metrics and performance ratings.</p>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#000000', marginBottom: '4px' }}>Driver Performance</h1>
+                <p style={{ color: '#000000', fontSize: '0.875rem' }}>Monitor and manage your fleet's driver safety metrics and performance ratings.</p>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
@@ -111,18 +111,18 @@ const DriverPerformance = () => {
                         placeholder="Search drivers, license numbers..."
                         value={searchTerm}
                         onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#1E293B' }}
+                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#000000' }}
                     />
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }} onClick={() => alert("Group by categories coming soon")}>
+                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }} onClick={() => alert("Group by categories coming soon")}>
                         <Layers size={16} /> Group by
                     </button>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }} onClick={() => alert("Advanced filtering panel coming soon")}>
+                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }} onClick={() => alert("Advanced filtering panel coming soon")}>
                         <Filter size={16} /> Filter
                     </button>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }} onClick={toggleSort}>
+                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#000000', fontSize: '0.875rem', cursor: 'pointer' }} onClick={toggleSort}>
                         <ArrowUpDown size={16} /> Sort by
                     </button>
                 </div>
@@ -134,13 +134,13 @@ const DriverPerformance = () => {
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                             <thead>
                                 <tr>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase' }}>Name</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase' }}>License #</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase' }}>Expiry</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Completion Rate</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Safety Score</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Complaints</th>
-                                    <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Actions</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase' }}>Name</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase' }}>License #</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase' }}>Expiry</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Completion Rate</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Safety Score</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Complaints</th>
+                                    <th style={{ color: '#000000', fontSize: '0.75rem', fontWeight: '600', padding: '12px 16px', borderBottom: '1px solid #E2E8F0', textTransform: 'uppercase', textAlign: 'center' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -149,21 +149,21 @@ const DriverPerformance = () => {
                                     const compColor = getScoreColor(driver.completion_rate);
                                     return (
                                         <tr key={driver.id} style={{ borderBottom: '1px solid #F1F5F9' }}>
-                                            <td style={{ padding: '16px 16px', color: '#1E293B', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <td style={{ padding: '16px 16px', color: '#000000', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: driver.avatarColor, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600' }}>
                                                     {driver.avatarInitials}
                                                 </div>
                                                 <span style={{ fontWeight: '500' }}>{driver.name || 'Unknown'}</span>
                                             </td>
-                                            <td style={{ padding: '16px 16px', fontSize: '0.875rem', color: '#475569' }}>
+                                            <td style={{ padding: '16px 16px', fontSize: '0.875rem', color: '#000000' }}>
                                                 {driver.license_number}
                                             </td>
-                                            <td style={{ padding: '16px 16px', fontSize: '0.875rem', color: '#475569' }}>
+                                            <td style={{ padding: '16px 16px', fontSize: '0.875rem', color: '#000000' }}>
                                                 {formatExpiry(driver.license_expiry_date)}
                                             </td>
                                             <td style={{ padding: '16px 16px', textAlign: 'center' }}>
                                                 <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                                                    <span style={{ fontWeight: '600', fontSize: '0.875rem', color: '#1E293B' }}>{driver.completion_rate}%</span>
+                                                    <span style={{ fontWeight: '600', fontSize: '0.875rem', color: '#000000' }}>{driver.completion_rate}%</span>
                                                     <div style={{ width: '48px', height: '2px', background: '#E2E8F0', borderRadius: '1px', overflow: 'hidden' }}>
                                                         <div style={{ width: `${Math.max(0, Math.min(100, driver.completion_rate))}%`, height: '100%', background: compColor }}></div>
                                                     </div>
@@ -172,7 +172,7 @@ const DriverPerformance = () => {
                                             <td style={{ padding: '16px 16px', textAlign: 'center' }}>
                                                 <span style={{ fontWeight: '700', fontSize: '0.875rem', color: scoreColor }}>{driver.safety_score}%</span>
                                             </td>
-                                            <td style={{ padding: '16px 16px', textAlign: 'center', fontSize: '0.875rem', color: '#475569' }}>
+                                            <td style={{ padding: '16px 16px', textAlign: 'center', fontSize: '0.875rem', color: '#000000' }}>
                                                 {driver.complaints}
                                             </td>
                                             <td style={{ padding: '16px 16px', textAlign: 'center' }}>
@@ -184,27 +184,27 @@ const DriverPerformance = () => {
                                     );
                                 })}
                                 {currentDrivers.length === 0 && (
-                                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '24px', color: '#64748B' }}>No drivers matching search criteria</td></tr>
+                                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '24px', color: '#000000' }}>No drivers matching search criteria</td></tr>
                                 )}
                             </tbody>
                         </table>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '24px', borderTop: '1px solid #E2E8F0', paddingTop: '16px' }}>
-                            <span style={{ color: '#64748B', fontSize: '0.875rem' }}>
+                            <span style={{ color: '#000000', fontSize: '0.875rem' }}>
                                 Showing {sortedDrivers.length > 0 ? indexOfFirstLog + 1 : 0} to {Math.min(indexOfLastLog, sortedDrivers.length)} of {sortedDrivers.length} drivers
                             </span>
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                                     disabled={currentPage === 1}
-                                    style={{ padding: '6px 12px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '6px', fontSize: '0.875rem', color: currentPage === 1 ? '#94A3B8' : '#374151', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                                    style={{ padding: '6px 12px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '6px', fontSize: '0.875rem', color: currentPage === 1 ? '#94A3B8' : '#000000', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
                                 >
                                     Previous
                                 </button>
                                 <button
                                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                     disabled={currentPage === totalPages || totalPages === 0}
-                                    style={{ padding: '6px 12px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '6px', fontSize: '0.875rem', color: currentPage === totalPages || totalPages === 0 ? '#94A3B8' : '#374151', cursor: currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer' }}
+                                    style={{ padding: '6px 12px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '6px', fontSize: '0.875rem', color: currentPage === totalPages || totalPages === 0 ? '#94A3B8' : '#000000', cursor: currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer' }}
                                 >
                                     Next
                                 </button>
