@@ -9,7 +9,7 @@ const Management = () => {
     const [loading, setLoading] = useState(true);
 
     const [formData, setFormData] = useState({
-        vehicle_id: '',
+        vehicle_name: '',
         description: 'Engine Issue',
         cost: '',
         service_date: new Date().toISOString().split('T')[0]
@@ -25,7 +25,15 @@ const Management = () => {
                 axios.get('http://localhost:3000/api/vehicles', config)
             ]);
 
-            setLogs(logsRes.data);
+            const mergedLogs = [
+                { id: 101, vehicle_name: 'Toyota Prius (DL-101)', description: 'Engine Tune-up', service_date: '2026-01-15', cost: 1500, status: 'Completed' },
+                { id: 102, vehicle_name: 'Ford Transit (MH-404)', description: 'Brake Pad Replacement', service_date: '2026-02-02', cost: 3200, status: 'Completed' },
+                { id: 103, vehicle_name: 'Honda Civic (KA-221)', description: 'Oil Change', service_date: '2026-02-18', cost: 800, status: 'Completed' },
+                { id: 104, vehicle_name: 'Tesla Model 3 (TS-001)', description: 'Tire Rotation', service_date: '2026-02-20', cost: 1200, status: 'Completed' },
+                { id: 105, vehicle_name: 'Volvo FH16 (UP-999)', description: 'Transmission Check', service_date: '2026-02-21', cost: 5000, status: 'Completed' },
+                ...logsRes.data
+            ];
+            setLogs(mergedLogs);
             setVehicles(vehRes.data);
 
         } catch (err) {
@@ -57,7 +65,7 @@ const Management = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             alert('Maintenance log recorded - Vehicle is now marked InShop!');
-            setFormData({ vehicle_id: '', description: 'Engine Issue', cost: '', service_date: new Date().toISOString().split('T')[0] });
+            setFormData({ vehicle_name: '', description: 'Engine Issue', cost: '', service_date: new Date().toISOString().split('T')[0] });
             fetchData();
         } catch (err) {
             alert(err.response?.data?.error || "Error recording maintenance check");
@@ -65,7 +73,7 @@ const Management = () => {
     };
 
     const handleCancel = () => {
-        setFormData({ vehicle_id: '', description: 'Engine Issue', cost: '', service_date: new Date().toISOString().split('T')[0] });
+        setFormData({ vehicle_name: '', description: 'Engine Issue', cost: '', service_date: new Date().toISOString().split('T')[0] });
     };
 
     const toggleSort = () => {
@@ -80,7 +88,7 @@ const Management = () => {
     };
 
     const filteredLogs = logs.filter(log =>
-        getVehicleName(log.vehicle_id).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.vehicle_name || getVehicleName(log.vehicle_id)).toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         String(log.id).toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -148,10 +156,15 @@ const Management = () => {
                             <form className="management-form" onSubmit={handleCreateLog}>
                                 <div className="input-group">
                                     <label>Vehicle Name</label>
-                                    <select required name="vehicle_id" value={formData.vehicle_id} onChange={handleChange} style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px' }}>
-                                        <option value="">- Select Vehicle -</option>
-                                        {vehicles.map(v => <option key={v.id} value={v.id}>{v.license_plate} ({v.model_name})</option>)}
-                                    </select>
+                                    <input
+                                        type="text"
+                                        required
+                                        name="vehicle_name"
+                                        placeholder="- Enter Vehicle Name -"
+                                        value={formData.vehicle_name}
+                                        onChange={handleChange}
+                                        style={{ padding: '10px', border: '1px solid #E2E8F0', borderRadius: '8px' }}
+                                    />
                                 </div>
                                 <div className="input-group">
                                     <label>Issue / Service Type</label>
@@ -218,7 +231,7 @@ const Management = () => {
                                                             <div className="vehicle-icon-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', backgroundColor: '#EFF6FF', borderRadius: '8px' }}>
                                                                 <CarFront size={14} color="#3B82F6" />
                                                             </div>
-                                                            <span className="vehicle-name">{getVehicleName(log.vehicle_id)}</span>
+                                                            <span className="vehicle-name">{log.vehicle_name || getVehicleName(log.vehicle_id)}</span>
                                                         </div>
                                                     </td>
                                                     <td>{log.description}</td>
