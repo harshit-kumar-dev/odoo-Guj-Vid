@@ -108,14 +108,14 @@ exports.login = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
     const { otp, tempToken } = req.body;
-    
+
     if (!otp || !tempToken) {
         return res.status(400).json({ error: 'OTP and temporary token are required' });
     }
 
     try {
         const decoded = jwt.verify(tempToken, process.env.JWT_SECRET || 'hackathon_secret');
-        
+
         const providedOtpHash = crypto.createHash('sha256').update(otp).digest('hex');
         if (providedOtpHash !== decoded.otpHash) {
             return res.status(400).json({ error: 'Invalid OTP' });
@@ -140,7 +140,7 @@ exports.verifyOtp = async (req, res) => {
     } catch (err) {
         console.error(err);
         if (err.name === 'TokenExpiredError') {
-             return res.status(400).json({ error: 'OTP has expired' });
+            return res.status(400).json({ error: 'OTP has expired' });
         }
         res.status(400).json({ error: 'Invalid or expired temporary token' });
     }
