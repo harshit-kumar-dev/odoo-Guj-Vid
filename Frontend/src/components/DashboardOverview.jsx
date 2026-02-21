@@ -2,12 +2,38 @@ import React, { useState } from 'react';
 import { Search, Layers, Filter, ArrowUpDown, MoreVertical, Truck, AlertTriangle, PackageOpen } from 'lucide-react';
 
 const DashboardOverview = () => {
+    const [isGroupByOpen, setIsGroupByOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedGroup, setSelectedGroup] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('');
     const [trips] = useState([
         { id: 'TR-9821', vehicle: 'Volvo FH16 (CA-1234)', type: 'Heavy Duty', driver: 'John Doe', status: 'On Trip', statusColor: 'green' },
         { id: 'TR-9822', vehicle: 'Scania R450 (NY-5678)', type: 'Long Haul', driver: 'Sarah Smith', status: 'Completed', statusColor: 'blue' },
         { id: 'TR-9823', vehicle: 'Mercedes Actros (TX-9012)', type: 'Heavy Duty', driver: 'Michael Brown', status: 'Dispatched', statusColor: 'orange' },
         { id: 'TR-9824', vehicle: 'Freightliner Cascadia (FL-3456)', type: 'Express Delivery', driver: 'Emily Davis', status: 'Delayed', statusColor: 'red' },
     ]);
+
+    const filteredTrips = trips.filter(trip => {
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = (
+            trip.vehicle.toLowerCase().includes(query) ||
+            trip.driver.toLowerCase().includes(query) ||
+            trip.id.toLowerCase().includes(query) ||
+            trip.type.toLowerCase().includes(query)
+        );
+        const matchesGroup = selectedGroup ? trip.type === selectedGroup : true;
+
+        let matchesFilter = true;
+        if (selectedFilter) {
+            if (selectedFilter === 'Dispatch') matchesFilter = trip.status === 'Dispatched';
+            else if (selectedFilter === 'Complete') matchesFilter = trip.status === 'Completed';
+            else matchesFilter = trip.status === selectedFilter;
+        }
+
+        return matchesSearch && matchesGroup && matchesFilter;
+    });
 
     const getStatusStyle = (color) => {
         if (color === 'green') return { bg: '#D1FAE5', text: '#065F46', dot: '#10B981' };
@@ -26,14 +52,132 @@ const DashboardOverview = () => {
 
             {/* Toolbar */}
             <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', flex: '1', minWidth: '300px' }}>
-                    <Search size={18} color="#94A3B8" />
-                    <input type="text" placeholder="Search trips, vehicles, or drivers..." style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem' }} />
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: '#fff',
+                    border: `1px solid ${isSearchFocused ? '#3B82F6' : '#E2E8F0'}`,
+                    boxShadow: isSearchFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
+                    borderRadius: '8px',
+                    padding: '8px 16px',
+                    flex: '1',
+                    minWidth: '300px',
+                    transition: 'all 0.2s ease-in-out'
+                }}>
+                    <Search size={18} color={isSearchFocused ? '#3B82F6' : '#94A3B8'} />
+                    <input
+                        type="text"
+                        placeholder="Search vehicles, drivers, or trips..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
+                        style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#1E293B' }}
+                    />
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}><Layers size={16} /> Group by</button>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}><Filter size={16} /> Filter</button>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}><ArrowUpDown size={16} /> Sort by</button>
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setIsGroupByOpen(!isGroupByOpen)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                            <Layers size={16} /> Group by
+                        </button>
+                        {isGroupByOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                marginTop: '4px',
+                                background: '#fff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                width: '160px',
+                                zIndex: 10,
+                                overflow: 'hidden'
+                            }}>
+                                {['Heavy Duty', 'Long Haul', 'Express Delivery'].map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            padding: '8px 16px',
+                                            fontSize: '0.875rem',
+                                            color: selectedGroup === option ? '#2563EB' : '#374151',
+                                            fontWeight: selectedGroup === option ? '600' : '400',
+                                            cursor: 'pointer',
+                                            borderBottom: idx !== 2 ? '1px solid #F1F5F9' : 'none',
+                                            transition: 'all 0.2s',
+                                            backgroundColor: selectedGroup === option ? '#EFF6FF' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (selectedGroup !== option) e.target.style.backgroundColor = '#F8FAFC';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (selectedGroup !== option) e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                        onClick={() => {
+                                            setSelectedGroup(selectedGroup === option ? '' : option);
+                                            setIsGroupByOpen(false);
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <button
+                            onClick={() => setIsFilterOpen(!isFilterOpen)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#fff', border: '1px solid #E2E8F0', borderRadius: '8px', padding: '8px 16px', color: '#475569', fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                            <Filter size={16} /> Filter
+                        </button>
+                        {isFilterOpen && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '100%',
+                                left: 0,
+                                marginTop: '4px',
+                                background: '#fff',
+                                border: '1px solid #E2E8F0',
+                                borderRadius: '8px',
+                                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                                width: '160px',
+                                zIndex: 10,
+                                overflow: 'hidden'
+                            }}>
+                                {['On Trip', 'Dispatch', 'Delayed', 'Complete'].map((option, idx) => (
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            padding: '8px 16px',
+                                            fontSize: '0.875rem',
+                                            color: selectedFilter === option ? '#2563EB' : '#374151',
+                                            fontWeight: selectedFilter === option ? '600' : '400',
+                                            cursor: 'pointer',
+                                            borderBottom: idx !== 3 ? '1px solid #F1F5F9' : 'none',
+                                            transition: 'all 0.2s',
+                                            backgroundColor: selectedFilter === option ? '#EFF6FF' : 'transparent'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (selectedFilter !== option) e.target.style.backgroundColor = '#F8FAFC';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (selectedFilter !== option) e.target.style.backgroundColor = 'transparent';
+                                        }}
+                                        onClick={() => {
+                                            setSelectedFilter(selectedFilter === option ? '' : option);
+                                            setIsFilterOpen(false);
+                                        }}
+                                    >
+                                        {option}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -83,7 +227,7 @@ const DashboardOverview = () => {
             </div>
 
             {/* Recent Trips Table */}
-            <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', overflowX: 'auto' }}>
+            <div style={{ background: '#fff', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '24px', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: '#1E293B', margin: 0 }}>Recent Trips</h3>
                     <div style={{ display: 'flex', gap: '12px' }}>
@@ -96,7 +240,7 @@ const DashboardOverview = () => {
                     </div>
                 </div>
 
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                     <thead>
                         <tr>
                             <th style={{ color: '#64748B', fontSize: '0.75rem', fontWeight: '600', padding: '12px 0', borderBottom: '1px solid #E2E8F0', width: '15%' }}>TRIP ID</th>
@@ -107,10 +251,10 @@ const DashboardOverview = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {trips.map((trip, idx) => {
+                        {filteredTrips.map((trip, idx) => {
                             const style = getStatusStyle(trip.statusColor);
                             return (
-                                <tr key={idx} style={{ borderBottom: idx === trips.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
+                                <tr key={idx} style={{ borderBottom: idx === filteredTrips.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
                                     <td style={{ padding: '16px 0', color: '#475569', fontSize: '0.875rem' }}>{trip.id}</td>
                                     <td style={{ padding: '16px 0' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
