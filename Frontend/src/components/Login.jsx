@@ -35,6 +35,7 @@ const Login = () => {
 
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userRole', role);
                 // Custom routing based on role
                 if (role === 'FinancialAnalyst') {
                     navigate('/trip-expense');

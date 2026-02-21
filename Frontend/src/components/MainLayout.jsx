@@ -1,105 +1,138 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, CarFront, Navigation, PenTool, Users, Banknote, LineChart, LogOut, Package } from 'lucide-react';
-import { jwtDecode } from 'jwt-decode';
+import {
+    Menu,
+    X,
+    LayoutDashboard,
+    Car,
+    MapPin,
+    Wrench,
+    ShieldCheck,
+    Receipt,
+    PieChart,
+    LogOut,
+    Bell
+} from 'lucide-react';
 import './MainLayout.css';
 
+
 const MainLayout = () => {
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const navigate = useNavigate();
 
-    // Safety check for role-based sidebar items
-    let role = 'Manager';
-    try {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            role = decodedToken.role;
-        }
-    } catch (err) {
-        // use default Manager
-    }
+    // Get role from localStorage
+    const role = localStorage.getItem('userRole') || 'Manager';
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
         navigate('/');
     };
 
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
+
     return (
-        <div className="main-layout">
-            <aside className="sidebar">
-                <div className="sidebar-brand">
-                    <div className="logo-icon blue-logo">
-                        <Package size={24} color="#ffffff" />
+        <div className="layout-container">
+            {/* Sidebar */}
+            <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+                <div className="sidebar-header">
+                    <div className="logo-section">
+                        <div className="logo-icon blue-logo">
+                            <Car size={24} color="#ffffff" />
+                        </div>
+                        {sidebarOpen && <span className="logo-text">Shipzo</span>}
                     </div>
-                    <span className="logo-text">Shipzo</span>
+                    {sidebarOpen && (
+                        <button className="close-sidebar-btn d-mobile" onClick={toggleSidebar}>
+                            <X size={20} />
+                        </button>
+                    )}
+                </div>
+
+                <div className="sidebar-role-badge">
+                    {sidebarOpen && <span className="role-text">{role}</span>}
                 </div>
 
                 <nav className="sidebar-nav">
-                    <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
+                    <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                         <LayoutDashboard size={20} />
-                        <span>Dashboard</span>
+                        {sidebarOpen && <span>Dashboard Overview</span>}
                     </NavLink>
 
-                    {/* Manager & Dispatcher Only */}
-                    {['Manager', 'Dispatcher'].includes(role) && (
+                    {role === 'Manager' && (
+                        <NavLink to="/vehicle-registry" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                            <Car size={20} />
+                            {sidebarOpen && <span>Vehicle Registry</span>}
+                        </NavLink>
+                    )}
+
+                    {role === 'Dispatcher' && (
+                        <NavLink to="/dispatcher" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                            <MapPin size={20} />
+                            {sidebarOpen && <span>Trip Dispatcher</span>}
+                        </NavLink>
+                    )}
+
+                    {role === 'SafetyOfficer' && (
                         <>
-                            <NavLink to="/vehicle-registry" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                                <CarFront size={20} />
-                                <span>Vehicle Registry</span>
+                            <NavLink to="/maintenance" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                                <Wrench size={20} />
+                                {sidebarOpen && <span>Maintenance Logs</span>}
                             </NavLink>
-                            <NavLink to="/dispatcher" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                                <Navigation size={20} />
-                                <span>Trip Dispatcher</span>
+                            <NavLink to="/driver-performance" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                                <ShieldCheck size={20} />
+                                {sidebarOpen && <span>Driver Performance</span>}
                             </NavLink>
                         </>
                     )}
 
-                    {/* Manager & Safety Officer Only */}
-                    {['Manager', 'SafetyOfficer'].includes(role) && (
+                    {role === 'FinancialAnalyst' && (
                         <>
-                            <NavLink to="/maintenance" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                                <PenTool size={20} />
-                                <span>Maintenance Logs</span>
+                            <NavLink to="/trip-expense" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                                <Receipt size={20} />
+                                {sidebarOpen && <span>Trip & Expense</span>}
                             </NavLink>
-                            <NavLink to="/driver-performance" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                                <Users size={20} />
-                                <span>Drivers & Safety</span>
-                            </NavLink>
-                        </>
-                    )}
-
-                    {/* Manager & Financial Analyst Only */}
-                    {['Manager', 'FinancialAnalyst'].includes(role) && (
-                        <>
-                            <NavLink to="/trip-expense" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                                <Banknote size={20} />
-                                <span>Trip Expenses</span>
-                            </NavLink>
-                            <NavLink to="/financial-analytics" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-                                <LineChart size={20} />
-                                <span>Analytics</span>
+                            <NavLink to="/financial-analytics" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                                <PieChart size={20} />
+                                {sidebarOpen && <span>Operational Analytics</span>}
                             </NavLink>
                         </>
                     )}
                 </nav>
 
                 <div className="sidebar-footer">
-                    <div className="user-profile">
-                        <div className="user-avatar">{role.substring(0, 2).toUpperCase()}</div>
-                        <div className="user-info">
-                            <span className="user-role">{role}</span>
-                        </div>
-                    </div>
-                    <button onClick={handleLogout} className="logout-btn">
-                        <LogOut size={18} />
-                        <span>Sign Out</span>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        <LogOut size={20} />
+                        {sidebarOpen && <span>Log Out</span>}
                     </button>
                 </div>
             </aside>
 
-            <main className="layout-content">
-                <Outlet />
-            </main>
+            {/* Main Content Area */}
+            <div className="main-content-area">
+                <header className="top-header">
+                    <div className="header-left">
+                        <button className="hamburger-btn" onClick={toggleSidebar}>
+                            <Menu size={24} />
+                        </button>
+                    </div>
+                    <div className="header-right">
+                        <button className="icon-btn">
+                            <Bell size={20} />
+                        </button>
+                        <div className="user-profile">
+                            <span className="user-name">Alex Johnson</span>
+                            <div className="avatar">AJ</div>
+                        </div>
+                    </div>
+                </header>
+
+                <main className="page-content">
+                    <Outlet />
+                </main>
+            </div>
         </div>
     );
 };
