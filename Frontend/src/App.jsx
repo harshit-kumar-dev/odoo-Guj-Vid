@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import Expense from './components/Expense';
+import Management from './components/Management';
 import './App.css';
 
 // A dummy Analytics component just to show RBAC in action
@@ -42,6 +44,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/expense" element={<Expense />} />
+          <Route path="/management" element={<Management />} />
 
           {/* Catch-all redirect */}
           <Route path="*" element={<Navigate to="/" replace />} />

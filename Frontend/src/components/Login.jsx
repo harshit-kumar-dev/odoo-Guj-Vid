@@ -43,7 +43,14 @@ const Login = () => {
                 setSuccessMsg('OTP sent to your email.');
             } else if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/dashboard');
+                // Custom routing based on role
+                if (role === 'FinancialAnalyst') {
+                    navigate('/expense');
+                } else if (role === 'Dispatcher') {
+                    navigate('/management');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
                 setError('Unexpected response from server.');
             }
@@ -67,7 +74,13 @@ const Login = () => {
 
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                navigate('/dashboard');
+                if (role === 'FinancialAnalyst') {
+                    navigate('/expense');
+                } else if (role === 'Dispatcher') {
+                    navigate('/management');
+                } else {
+                    navigate('/dashboard');
+                }
             } else {
                 setError('Invalid server response during OTP verification.');
             }
@@ -84,7 +97,7 @@ const Login = () => {
             <div className="login-left-panel">
                 <div className="brand-logo">
                     <div className="logo-icon">
-                        <Package size={36} color="#ffffff" />
+                        <Package size={36} color="#2F80ED" />
                     </div>
                     <span className="logo-text">Shipzo</span>
                 </div>
