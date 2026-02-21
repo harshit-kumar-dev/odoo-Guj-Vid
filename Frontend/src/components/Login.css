@@ -46,11 +46,11 @@ body {
 }
 
 .logo-text {
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 600;
     letter-spacing: -0.5px;
-    /* Shipzo Blue from reference image */
     color: #2F80ED;
+    /* Shipzo blue updated */
 }
 
 /* Hero Section */
