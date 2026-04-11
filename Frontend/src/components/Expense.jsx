@@ -174,7 +174,7 @@ const Expense = () => {
                                         onFocus={() => setIsLitersFocused(true)}
                                         onBlur={() => setIsLitersFocused(false)}
                                         onChange={e => setFormData({ ...formData, liters: e.target.value })}
-                                        style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }}
+                                        style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', color: '#000000' }}
                                         placeholder="0.0"
                                     />
                                 </div>
@@ -195,7 +195,7 @@ const Expense = () => {
                                         onFocus={() => setIsCostFocused(true)}
                                         onBlur={() => setIsCostFocused(false)}
                                         onChange={e => setFormData({ ...formData, cost: e.target.value })}
-                                        style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent' }}
+                                        style={{ border: 'none', outline: 'none', width: '100%', fontSize: '0.875rem', color: '#000000' }}
                                         placeholder="0.00"
                                     />
                                 </div>
@@ -217,8 +217,9 @@ const Expense = () => {
                                     boxShadow: isDateFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
                                     borderRadius: '8px',
                                     fontSize: '0.875rem',
-                                    backgroundColor: 'transparent',
+                        
                                     outline: 'none',
+                                    color: '#000000',
                                     transition: 'all 0.2s ease-in-out'
                                 }}
                             />
@@ -250,7 +251,7 @@ const Expense = () => {
                                     placeholder="Search details..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', backgroundColor: 'transparent', color: '#000' }}
+                                    style={{ border: 'none', outline: 'none', marginLeft: '8px', width: '100%', fontSize: '0.875rem', color: '#000' }}
                                 />
                             </div>
 
