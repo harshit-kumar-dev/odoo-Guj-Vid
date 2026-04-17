@@ -1,6 +1,9 @@
 # Fleet Logistics Management System
 
 A comprehensive fleet management platform built to streamline operations, track expenses, manage drivers, and optimize vehicle dispatching. This system features role-based access control, allowing different stakeholders (Fleet Managers, Dispatchers, Financial Analysts, and Safety Officers) to access specific tools and analytics pertinent to their duties.
+<br><br>
+<img width="1919" height="980" alt="image" src="https://github.com/user-attachments/assets/6bf6c6fd-c812-4513-a7ce-7ec9bcc4748e" />
+
 
 ## Tech Stack
 * **Frontend:** React, React Router, Vite, Axios, Lucide-React
